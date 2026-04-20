@@ -1,0 +1,586 @@
+<div class="profile-page">
+  <!-- Header -->
+  <header class="profile-header">
+    <div class="header-container">
+      <button class="btn-back" (click)="router.navigate([getBackRoute()])">
+        <i class="bi bi-arrow-left"></i>
+        <span>Retour</span>
+      </button>
+      
+      <div class="header-title">
+        <i class="bi bi-person-circle"></i>
+        <h1>Mon Profil</h1>
+      </div>
+      
+      <span class="role-badge" [class.admin]="isAdmin()" [class.doctor]="isDoctor()">
+        {{ getUserRole() }}
+      </span>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div class="messages-container">
+    <div *ngIf="successMessage" class="alert alert-success">
+      <i class="bi bi-check-circle"></i>
+      <span>{{ successMessage }}</span>
+    </div>
+    <div *ngIf="errorMessage" class="alert alert-danger">
+      <i class="bi bi-exclamation-triangle"></i>
+      <span>{{ errorMessage }}</span>
+    </div>
+  </div>
+
+  <!-- Main Content -->
+  <main class="profile-main" *ngIf="user">
+    
+    <!-- Profile Header Card with Photo - Design Médical Premium -->
+    <section class="profile-hero-card">
+      <!-- Éléments décoratifs médicaux -->
+      <div class="medical-decoration">
+        <svg class="medical-cross" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <path d="M12 5V19M5 12H19" stroke="rgba(255,255,255,0.1)" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg class="medical-circle" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <circle cx="50" cy="50" r="40" stroke="rgba(255,255,255,0.05)" stroke-width="1"/>
+          <circle cx="50" cy="50" r="25" stroke="rgba(255,255,255,0.03)" stroke-width="1"/>
+        </svg>
+      </div>
+      
+      <div class="photo-section">
+        <div class="photo-container" [class.has-photo]="hasPhoto()">
+          <img *ngIf="hasPhoto()" [src]="profileImage" alt="Photo de profil" class="profile-photo">
+          <div *ngIf="!hasPhoto()" class="photo-placeholder">
+            <div class="avatar-fallback">
+              <i class="bi bi-person-fill"></i>
+            </div>
+          </div>
+          
+          <!-- Photo Overlay -->
+          <div class="photo-overlay">
+            <label class="upload-btn" for="photo-upload" [class.uploading]="uploadingPhoto">
+              <i class="bi bi-camera"></i>
+              <span>{{ uploadingPhoto ? 'Chargement...' : 'Changer' }}</span>
+            </label>
+            <input 
+              type="file" 
+              id="photo-upload" 
+              accept="image/*" 
+              (change)="onFileSelected($event)" 
+              hidden>
+            
+            <button *ngIf="hasPhoto()" class="remove-btn" (click)="removePhoto()" title="Supprimer la photo">
+              <i class="bi bi-trash"></i>
+            </button>
+          </div>
+        </div>
+        
+        <div class="photo-hint">
+          <i class="bi bi-camera-fill"></i>
+          <span>Ajouter une photo</span>
+          <small>Max 5 Mo • JPG, PNG</small>
+        </div>
+      </div>
+      
+      <div class="hero-info">
+        <h2 class="user-name">
+          <span *ngIf="isDoctor()">Dr. </span>
+          <span [class.name-placeholder]="!getDisplayName() || getDisplayName() === 'Votre Nom'">
+            {{ getDisplayName() }}
+          </span>
+        </h2>
+        <p class="user-email">
+          <i class="bi bi-envelope"></i>
+          {{ user.email }}
+        </p>
+        <p class="user-phone" *ngIf="profileForm.get('phone')?.value">
+          <i class="bi bi-telephone"></i>
+          {{ profileForm.get('phone')?.value }}
+        </p>
+        <div class="member-badge">
+          <i class="bi bi-shield-check"></i>
+          <span>Membre vérifié depuis aujourd'hui</span>
+        </div>
+      </div>
+    </section>
+
+    <!-- Navigation Tabs -->
+    <nav class="profile-tabs">
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'info'"
+        (click)="activeTab = 'info'">
+        <i class="bi bi-person-vcard"></i>
+        <span>Informations</span>
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'password'"
+        (click)="activeTab = 'password'">
+        <i class="bi bi-shield-lock"></i>
+        <span>Mot de passe</span>
+      </button>
+      <button 
+        class="tab-btn" 
+        [class.active]="activeTab === 'security'"
+        (click)="activeTab = 'security'">
+        <i class="bi bi-shield-check"></i>
+        <span>Sécurité</span>
+      </button>
+    </nav>
+
+    <!-- Tab Content: Informations -->
+    <section class="tab-panel" *ngIf="activeTab === 'info'">
+      <div class="panel-header">
+        <h2><i class="bi bi-person-lines-fill"></i> Informations personnelles</h2>
+        <p>Mettez à jour vos informations et vos coordonnées</p>
+      </div>
+      
+      <form [formGroup]="profileForm" (ngSubmit)="onUpdateProfile()" class="profile-form">
+        
+        <!-- Section: Identité -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <i class="bi bi-person"></i>
+            Identité
+          </h3>
+          
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="firstName">
+                <i class="bi bi-person"></i>
+                Prénom *
+              </label>
+              <input 
+                type="text" 
+                id="firstName" 
+                formControlName="firstName" 
+                class="form-input"
+                placeholder="Votre prénom"
+                [class.error]="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+              <div class="field-error" *ngIf="profileForm.get('firstName')?.invalid && profileForm.get('firstName')?.touched">
+                <i class="bi bi-exclamation-circle"></i>
+                Le prénom est requis (min. 2 caractères)
+              </div>
+            </div>
+
+            <div class="form-field">
+              <label for="lastName">
+                <i class="bi bi-person"></i>
+                Nom *
+              </label>
+              <input 
+                type="text" 
+                id="lastName" 
+                formControlName="lastName" 
+                class="form-input"
+                placeholder="Votre nom"
+                [class.error]="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+              <div class="field-error" *ngIf="profileForm.get('lastName')?.invalid && profileForm.get('lastName')?.touched">
+                <i class="bi bi-exclamation-circle"></i>
+                Le nom est requis (min. 2 caractères)
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Contact -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <i class="bi bi-envelope"></i>
+            Contact
+          </h3>
+          
+          <div class="form-field">
+            <label for="email">
+              <i class="bi bi-envelope-at"></i>
+              Email *
+            </label>
+            <input 
+              type="email" 
+              id="email" 
+              formControlName="email" 
+              class="form-input"
+              placeholder="votre@email.com"
+              [class.error]="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+            <div class="field-error" *ngIf="profileForm.get('email')?.invalid && profileForm.get('email')?.touched">
+              <i class="bi bi-exclamation-circle"></i>
+              Veuillez entrer un email valide
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="phone">
+              <i class="bi bi-telephone"></i>
+              Téléphone
+            </label>
+            <input 
+              type="tel" 
+              id="phone" 
+              formControlName="phone" 
+              class="form-input"
+              placeholder="+216 XX XXX XXX">
+          </div>
+        </div>
+
+        <!-- Section: Adresse -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <i class="bi bi-geo-alt"></i>
+            Adresse
+          </h3>
+          
+          <div class="form-field">
+            <label for="address">Adresse</label>
+            <input 
+              type="text" 
+              id="address" 
+              formControlName="address" 
+              class="form-input"
+              placeholder="Votre adresse">
+          </div>
+
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="city">Ville</label>
+              <input 
+                type="text" 
+                id="city" 
+                formControlName="city" 
+                class="form-input"
+                placeholder="Votre ville">
+            </div>
+
+            <div class="form-field">
+              <label for="postalCode">Code postal</label>
+              <input 
+                type="text" 
+                id="postalCode" 
+                formControlName="postalCode" 
+                class="form-input"
+                placeholder="Code postal">
+            </div>
+          </div>
+        </div>
+
+        <!-- Section: Professionnel (Médecins uniquement) -->
+        <div class="form-section" *ngIf="isDoctor()">
+          <h3 class="section-title">
+            <i class="bi bi-heart-pulse"></i>
+            Informations professionnelles
+          </h3>
+          
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="specialty">
+                <i class="bi bi-award"></i>
+                Spécialité médicale
+              </label>
+              <select id="specialty" formControlName="specialty" class="form-input form-select">
+                <option value="">Sélectionnez une spécialité</option>
+                <option *ngFor="let specialty of specialties" [value]="specialty">
+                  {{ specialty }}
+                </option>
+              </select>
+            </div>
+
+            <div class="form-field">
+              <label for="licenseNumber">
+                <i class="bi bi-card-text"></i>
+                Numéro de licence
+              </label>
+              <input 
+                type="text" 
+                id="licenseNumber" 
+                formControlName="licenseNumber" 
+                class="form-input"
+                placeholder="Numéro de licence médicale">
+            </div>
+          </div>
+
+          <div class="form-grid two-columns">
+            <div class="form-field">
+              <label for="yearsExperience">
+                <i class="bi bi-calendar3"></i>
+                Années d'expérience
+              </label>
+              <input 
+                type="number" 
+                id="yearsExperience" 
+                formControlName="yearsExperience" 
+                class="form-input"
+                placeholder="Nombre d'années"
+                min="0"
+                max="60">
+            </div>
+
+            <div class="form-field">
+              <label for="consultationFee">
+                <i class="bi bi-currency-dollar"></i>
+                Tarif consultation (DT)
+              </label>
+              <input 
+                type="number" 
+                id="consultationFee" 
+                formControlName="consultationFee" 
+                class="form-input"
+                placeholder="Prix en dinars"
+                min="0">
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="bio">
+              <i class="bi bi-file-text"></i>
+              Biographie / Présentation
+            </label>
+            <textarea 
+              id="bio" 
+              formControlName="bio" 
+              class="form-input form-textarea"
+              rows="4"
+              placeholder="Décrivez votre expérience, vos spécialités et votre parcours professionnel..."></textarea>
+            <span class="field-hint">Cette description sera visible par vos patients</span>
+          </div>
+        </div>
+
+        <!-- Section: Réseaux sociaux -->
+        <div class="form-section">
+          <h3 class="section-title">
+            <i class="bi bi-share"></i>
+            Réseaux sociaux & Web
+          </h3>
+          
+          <div class="form-field">
+            <label for="linkedin">
+              <i class="bi bi-linkedin"></i>
+              LinkedIn
+            </label>
+            <input 
+              type="url" 
+              id="linkedin" 
+              formControlName="linkedin" 
+              class="form-input"
+              placeholder="https://linkedin.com/in/votre-profil">
+          </div>
+
+          <div class="form-field">
+            <label for="website">
+              <i class="bi bi-globe"></i>
+              Site web personnel
+            </label>
+            <input 
+              type="url" 
+              id="website" 
+              formControlName="website" 
+              class="form-input"
+              placeholder="https://www.votresite.com">
+          </div>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="router.navigate([getBackRoute()])">
+            <i class="bi bi-x-lg"></i>
+            Annuler
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="savingProfile || profileForm.invalid">
+            <i class="bi bi-check-lg" *ngIf="!savingProfile"></i>
+            <i class="bi bi-arrow-repeat spin" *ngIf="savingProfile"></i>
+            <span>{{ savingProfile ? 'Enregistrement...' : 'Enregistrer les modifications' }}</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tab Content: Password -->
+    <section class="tab-panel" *ngIf="activeTab === 'password'">
+      <div class="panel-header">
+        <h2><i class="bi bi-shield-lock"></i> Sécurité du compte</h2>
+        <p>Changez votre mot de passe pour sécuriser votre compte</p>
+      </div>
+      
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()" class="profile-form">
+        
+        <div class="form-section">
+          <div class="form-field">
+            <label for="currentPassword">
+              <i class="bi bi-key"></i>
+              Mot de passe actuel *
+            </label>
+            <div class="input-with-icon">
+              <input 
+                type="password" 
+                id="currentPassword" 
+                formControlName="currentPassword" 
+                class="form-input"
+                placeholder="Entrez votre mot de passe actuel"
+                [class.error]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+              <i class="bi bi-eye-slash input-icon"></i>
+            </div>
+            <div class="field-error" *ngIf="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+              <i class="bi bi-exclamation-circle"></i>
+              Le mot de passe actuel est requis
+            </div>
+          </div>
+
+          <div class="password-strength" *ngIf="passwordForm.get('newPassword')?.value">
+            <div class="strength-bar">
+              <div class="strength-fill" [style.width.%]="getPasswordStrength()"></div>
+            </div>
+            <span class="strength-text">{{ getPasswordStrengthText() }}</span>
+          </div>
+
+          <div class="form-field">
+            <label for="newPassword">
+              <i class="bi bi-lock"></i>
+              Nouveau mot de passe *
+            </label>
+            <div class="input-with-icon">
+              <input 
+                type="password" 
+                id="newPassword" 
+                formControlName="newPassword" 
+                class="form-input"
+                placeholder="Minimum 8 caractères"
+                [class.error]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+              <i class="bi bi-eye-slash input-icon"></i>
+            </div>
+            <div class="field-hint">
+              <i class="bi bi-info-circle"></i>
+              Minimum 8 caractères, incluant majuscules, minuscules et chiffres
+            </div>
+            <div class="field-error" *ngIf="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+              <i class="bi bi-exclamation-circle"></i>
+              Le mot de passe doit contenir au moins 8 caractères
+            </div>
+          </div>
+
+          <div class="form-field">
+            <label for="confirmPassword">
+              <i class="bi bi-lock-fill"></i>
+              Confirmer le mot de passe *
+            </label>
+            <div class="input-with-icon">
+              <input 
+                type="password" 
+                id="confirmPassword" 
+                formControlName="confirmPassword" 
+                class="form-input"
+                placeholder="Confirmez votre nouveau mot de passe"
+                [class.error]="(passwordForm.get('confirmPassword')?.invalid || passwordForm.hasError('passwordMismatch')) && passwordForm.get('confirmPassword')?.touched">
+              <i class="bi bi-eye-slash input-icon"></i>
+            </div>
+            <div class="field-error" *ngIf="passwordForm.hasError('passwordMismatch') && passwordForm.get('confirmPassword')?.touched">
+              <i class="bi bi-exclamation-circle"></i>
+              Les mots de passe ne correspondent pas
+            </div>
+          </div>
+        </div>
+
+        <div class="form-actions">
+          <button type="button" class="btn btn-outline" (click)="activeTab = 'info'">
+            <i class="bi bi-arrow-left"></i>
+            Retour
+          </button>
+          <button type="submit" class="btn btn-primary" [disabled]="savingPassword || passwordForm.invalid">
+            <i class="bi bi-shield-check" *ngIf="!savingPassword"></i>
+            <i class="bi bi-arrow-repeat spin" *ngIf="savingPassword"></i>
+            <span>{{ savingPassword ? 'Changement...' : 'Changer le mot de passe' }}</span>
+          </button>
+        </div>
+      </form>
+    </section>
+
+    <!-- Tab Content: Security -->
+    <section class="tab-panel" *ngIf="activeTab === 'security'">
+      <div class="panel-header">
+        <h2><i class="bi bi-shield-check"></i> Paramètres de sécurité</h2>
+        <p>Gérez la sécurité de votre compte et vos sessions</p>
+      </div>
+
+      <div class="security-cards">
+        <!-- 2FA Card -->
+        <div class="security-card">
+          <div class="card-icon blue">
+            <i class="bi bi-shield-lock"></i>
+          </div>
+          <div class="card-content">
+            <h3>Double authentification (2FA)</h3>
+            <p>Activez la double authentification pour une sécurité renforcée. Un code sera envoyé à votre téléphone à chaque connexion.</p>
+            <span class="status-badge disabled">
+              <i class="bi bi-x-circle"></i>
+              Non activé
+            </span>
+          </div>
+          <button class="btn btn-secondary" disabled>
+            <i class="bi bi-clock"></i>
+            Bientôt disponible
+          </button>
+        </div>
+
+        <!-- Sessions Card -->
+        <div class="security-card">
+          <div class="card-icon green">
+            <i class="bi bi-devices"></i>
+          </div>
+          <div class="card-content">
+            <h3>Sessions actives</h3>
+            <p>Gérez les appareils connectés à votre compte et déconnectez ceux que vous ne reconnaissez pas.</p>
+            <span class="status-badge active">
+              <i class="bi bi-check-circle"></i>
+              1 appareil connecté
+            </span>
+          </div>
+          <button class="btn btn-secondary" disabled>
+            <i class="bi bi-clock"></i>
+            Bientôt disponible
+          </button>
+        </div>
+
+        <!-- Logout Card -->
+        <div class="security-card warning">
+          <div class="card-icon orange">
+            <i class="bi bi-box-arrow-right"></i>
+          </div>
+          <div class="card-content">
+            <h3>Déconnexion globale</h3>
+            <p>Déconnectez-vous de toutes les sessions et appareils connectés à votre compte.</p>
+            <span class="status-badge warning">
+              <i class="bi bi-exclamation-triangle"></i>
+              Action importante
+            </span>
+          </div>
+          <button class="btn btn-warning" (click)="logout()">
+            <i class="bi bi-box-arrow-right"></i>
+            Se déconnecter
+          </button>
+        </div>
+
+        <!-- Delete Account Card -->
+        <div class="security-card danger" *ngIf="false">
+          <div class="card-icon red">
+            <i class="bi bi-trash"></i>
+          </div>
+          <div class="card-content">
+            <h3>Supprimer le compte</h3>
+            <p class="danger-text">Cette action est irréversible. Toutes vos données, patients et dossiers médicaux seront définitivement supprimés.</p>
+            <span class="status-badge danger">
+              <i class="bi bi-exclamation-octagon"></i>
+              Action irréversible
+            </span>
+          </div>
+          <button class="btn btn-danger-outline" disabled>
+            <i class="bi bi-trash"></i>
+            Supprimer mon compte
+          </button>
+        </div>
+      </div>
+    </section>
+  </main>
+</div>
+
+<!-- Ajout des méthodes manquantes dans le composant -->
+<ng-container *ngIf="false">
+  {{ getPasswordStrength() }}
+  {{ getPasswordStrengthText() }}
+</ng-container>

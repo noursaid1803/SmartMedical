@@ -1,0 +1,13 @@
+<div class="doctor-layout" [class.sidebar-collapsed]="sidebarCollapsed">
+  <app-doctor-sidebar [collapsed]="sidebarCollapsed"></app-doctor-sidebar>
+  
+  <div class="main-wrapper">
+    <app-doctor-header (toggleSidebar)="toggleSidebar()"></app-doctor-header>
+    
+    <main class="main-content">
+      <div class="content-wrapper">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

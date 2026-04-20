@@ -1,0 +1,376 @@
+// Medical Theme Colors
+$primary: #0ea5e9;
+$primary-dark: #0284c7;
+$secondary: #64748b;
+$success: #10b981;
+$warning: #f59e0b;
+$danger: #ef4444;
+$dark: #1e293b;
+$light: #f1f5f9;
+$white: #ffffff;
+$sidebar-width: 280px;
+$sidebar-collapsed-width: 80px;
+
+.doctor-sidebar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100vh;
+  width: $sidebar-width;
+  background: linear-gradient(180deg, $dark 0%, #0f172a 100%);
+  display: flex;
+  flex-direction: column;
+  transition: width 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1000;
+  box-shadow: 4px 0 24px rgba(0, 0, 0, 0.15);
+  overflow: hidden;
+
+  &.collapsed {
+    width: $sidebar-collapsed-width;
+
+    .sidebar-brand {
+      padding: 1.5rem 0.75rem;
+      
+      .brand-link {
+        justify-content: center;
+      }
+    }
+  }
+}
+
+// Brand Section
+.sidebar-brand {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+
+  .brand-link {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    text-decoration: none;
+    color: $white;
+    transition: all 0.3s ease;
+
+    &:hover {
+      .brand-icon {
+        transform: scale(1.1);
+      }
+    }
+  }
+
+  .brand-icon {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: transform 0.3s ease;
+    box-shadow: 0 4px 12px rgba(14, 165, 233, 0.3);
+
+    i {
+      font-size: 1.5rem;
+      color: $white;
+    }
+  }
+
+  .brand-text {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .brand-title {
+    font-size: 1.125rem;
+    font-weight: 700;
+    color: $white;
+    letter-spacing: -0.5px;
+  }
+
+  .brand-subtitle {
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.6);
+    font-weight: 500;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+  }
+}
+
+// Doctor Profile Section
+.doctor-profile {
+  padding: 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .profile-avatar {
+    width: 52px;
+    height: 52px;
+    background: linear-gradient(135deg, $success 0%, #059669 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+
+    i {
+      font-size: 1.75rem;
+      color: $white;
+    }
+  }
+
+  .profile-info {
+    flex: 1;
+  }
+
+  .profile-name {
+    margin: 0;
+    font-size: 0.9375rem;
+    font-weight: 600;
+    color: $white;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .profile-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.375rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-top: 0.25rem;
+
+    i {
+      color: $success;
+    }
+  }
+}
+
+// Compact Profile
+.doctor-profile-compact {
+  padding: 1.5rem 0.75rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+
+  .profile-avatar-compact {
+    width: 44px;
+    height: 44px;
+    background: linear-gradient(135deg, $success 0%, #059669 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    i {
+      font-size: 1.5rem;
+      color: $white;
+    }
+  }
+}
+
+// Navigation
+.sidebar-nav {
+  flex: 1;
+  padding: 1rem 0;
+  overflow-y: auto;
+
+  &::-webkit-scrollbar {
+    width: 4px;
+  }
+
+  &::-webkit-scrollbar-track {
+    background: transparent;
+  }
+
+  &::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.2);
+    border-radius: 2px;
+  }
+}
+
+.nav-section {
+  padding: 0 1.5rem;
+  margin-bottom: 0.75rem;
+
+  .nav-section-title {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 1.5px;
+    color: rgba(255, 255, 255, 0.4);
+  }
+}
+
+.nav-list {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.nav-item {
+  margin: 0.25rem 0.75rem;
+}
+
+.nav-link {
+  display: flex;
+  align-items: center;
+  gap: 0.875rem;
+  padding: 0.875rem 1rem;
+  color: rgba(255, 255, 255, 0.7);
+  text-decoration: none;
+  border-radius: 10px;
+  transition: all 0.25s ease;
+  position: relative;
+  overflow: hidden;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    height: 100%;
+    width: 3px;
+    background: linear-gradient(180deg, $primary 0%, $primary-dark 100%);
+    transform: scaleY(0);
+    transition: transform 0.25s ease;
+    border-radius: 0 3px 3px 0;
+  }
+
+  &:hover {
+    color: $white;
+    background: rgba(255, 255, 255, 0.05);
+  }
+
+  &.active {
+    color: $white;
+    background: linear-gradient(90deg, rgba(14, 165, 233, 0.15) 0%, rgba(14, 165, 233, 0.05) 100%);
+
+    &::before {
+      transform: scaleY(1);
+    }
+
+    .nav-icon {
+      background: linear-gradient(135deg, $primary 0%, $primary-dark 100%);
+      box-shadow: 0 4px 12px rgba(14, 165, 233, 0.4);
+    }
+  }
+}
+
+.nav-icon {
+  width: 36px;
+  height: 36px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 255, 255, 0.1);
+  border-radius: 8px;
+  transition: all 0.25s ease;
+  flex-shrink: 0;
+
+  i {
+    font-size: 1.125rem;
+  }
+}
+
+.nav-text {
+  font-size: 0.875rem;
+  font-weight: 500;
+  flex: 1;
+}
+
+.nav-badge {
+  background: $danger;
+  color: $white;
+  font-size: 0.6875rem;
+  font-weight: 600;
+  padding: 0.25rem 0.5rem;
+  border-radius: 20px;
+  min-width: 20px;
+  text-align: center;
+}
+
+// Footer
+.sidebar-footer {
+  padding: 1rem 1.5rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+
+  .footer-info {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+    color: rgba(255, 255, 255, 0.5);
+    margin-bottom: 0.75rem;
+
+    i {
+      color: $success;
+    }
+  }
+
+  .btn-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.625rem 1rem;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    border-radius: 8px;
+    font-size: 0.8125rem;
+    font-weight: 500;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: $white;
+    }
+
+    i {
+      font-size: 1rem;
+    }
+  }
+}
+
+.sidebar-footer-collapsed {
+  padding: 1rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  justify-content: center;
+
+  .btn-back-compact {
+    width: 44px;
+    height: 44px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.8);
+    border-radius: 10px;
+    text-decoration: none;
+    transition: all 0.25s ease;
+
+    &:hover {
+      background: rgba(255, 255, 255, 0.15);
+      color: $white;
+    }
+
+    i {
+      font-size: 1.25rem;
+    }
+  }
+}
+
+// Responsive
+@media (max-width: 1024px) {
+  .doctor-sidebar {
+    transform: translateX(-100%);
+    
+    &.show {
+      transform: translateX(0);
+    }
+  }
+}

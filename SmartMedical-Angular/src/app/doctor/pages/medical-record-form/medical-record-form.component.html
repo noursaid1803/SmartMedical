@@ -1,0 +1,601 @@
+<div class="medical-record-form-container">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1>{{ patientId ? '� Modifier le Dossier Médical' : '�📝 Nouveau Dossier Médical' }}</h1>
+      <p *ngIf="patient">Patient: <strong>{{ getPatientFullName() }}</strong></p>
+      <p *ngIf="!patient" class="subtitle">Créer un nouveau patient et son dossier médical</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Section Patient -->
+  <div class="form-section patient-section" *ngIf="!loading">
+    <h2>👤 Informations du Patient</h2>
+
+    <!-- Patient existant -->
+    <div *ngIf="patient && !showPatientForm" class="patient-card">
+      <div class="patient-header">
+        <div class="patient-avatar">{{ (patient.firstName && patient.firstName[0]) || '?' }}{{ (patient.lastName && patient.lastName[0]) || '?' }}</div>
+        <div class="patient-info">
+          <h3>{{ patient.firstName || 'Nouveau' }} {{ patient.lastName || 'Patient' }}</h3>
+          <p class="patient-details">
+            <span *ngIf="patient.dateOfBirth">🎂 {{ calculateAge(patient.dateOfBirth) }} ans</span>
+            <span *ngIf="patient.gender">| {{ patient.gender === 'M' ? '♂️ Masculin' : patient.gender === 'F' ? '♀️ Féminin' : '⚧ Autre' }}</span>
+            <span *ngIf="patient.bloodType && patient.bloodType !== 'UNKNOWN'">| 🩸 {{ patient.bloodType }}</span>
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="showPatientForm = true">
+          ✏️ Modifier
+        </button>
+      </div>
+
+      <div class="patient-body">
+        <div class="info-grid">
+          <div class="info-item" *ngIf="patient.phone">
+            <label>📞 Téléphone</label>
+            <span>{{ patient.phone }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.email">
+            <label>📧 Email</label>
+            <span>{{ patient.email }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.address || patient.city || patient.region">
+            <label>📍 Adresse</label>
+            <span>{{ patient.address }}{{ patient.city ? ', ' + patient.city : '' }}{{ patient.region ? ', ' + patient.region : '' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.height">
+            <label>📏 Taille</label>
+            <span>{{ patient.height }} cm</span>
+          </div>
+          <div class="info-item" *ngIf="patient.weight">
+            <label>⚖️ Poids</label>
+            <span>{{ patient.weight }} kg</span>
+          </div>
+          <div class="info-item" *ngIf="patient.occupation">
+            <label>💼 Profession</label>
+            <span>{{ patient.occupation }}{{ patient.employer ? ' - ' + patient.employer : '' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.allergies && patient.allergies.length > 0">
+            <label>⚠️ Allergies</label>
+            <span class="tag-list">
+              <span class="tag tag-warning" *ngFor="let allergy of patient.allergies">{{ allergy }}</span>
+            </span>
+          </div>
+          <div class="info-item" *ngIf="patient.chronicDiseases && patient.chronicDiseases.length > 0">
+            <label>🏥 Maladies chroniques</label>
+            <span class="tag-list">
+              <span class="tag tag-danger" *ngFor="let disease of patient.chronicDiseases">{{ disease }}</span>
+            </span>
+          </div>
+          <div class="info-item" *ngIf="patient.emergencyContact?.name">
+            <label>🚨 Contact d'urgence</label>
+            <span>{{ patient.emergencyContact.name }} ({{ patient.emergencyContact.relation || 'Non spécifié' }})<br>{{ patient.emergencyContact.phone || 'Pas de téléphone' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.insuranceInfo && patient.insuranceInfo.provider">
+            <label>🛡️ Assurance</label>
+            <span>{{ patient.insuranceInfo.provider }} - {{ (patient.insuranceInfo && patient.insuranceInfo.policyNumber) || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton créer nouveau patient -->
+    <div *ngIf="!patient && !showPatientForm" class="new-patient-prompt">
+      <p>Aucun patient sélectionné. Veuillez créer un nouveau patient pour ce dossier médical.</p>
+      <button type="button" class="btn btn-primary" (click)="showPatientForm = true">
+        ➕ Créer un nouveau patient
+      </button>
+    </div>
+
+    <!-- Formulaire patient -->
+    <form [formGroup]="patientForm" *ngIf="showPatientForm" class="patient-form">
+      <h3>{{ patientId ? '✏️ Modifier Patient' : '📝 Nouveau Patient' }}</h3>
+
+      <!-- Informations de base -->
+      <div class="form-subsection">
+        <h4>Informations de base</h4>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="firstName">Prénom *</label>
+            <input type="text" id="firstName" formControlName="firstName" class="form-control"
+                   [class.is-invalid]="patientForm.get('firstName')?.invalid && patientForm.get('firstName')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="lastName">Nom *</label>
+            <input type="text" id="lastName" formControlName="lastName" class="form-control"
+                   [class.is-invalid]="patientForm.get('lastName')?.invalid && patientForm.get('lastName')?.touched">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="dateOfBirth">Date de naissance *</label>
+            <input type="date" id="dateOfBirth" formControlName="dateOfBirth" class="form-control"
+                   [class.is-invalid]="patientForm.get('dateOfBirth')?.invalid && patientForm.get('dateOfBirth')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="gender">Genre *</label>
+            <select id="gender" formControlName="gender" class="form-control"
+                    [class.is-invalid]="patientForm.get('gender')?.invalid && patientForm.get('gender')?.touched">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let g of genders" [value]="g.value">{{ g.label }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bloodType">Groupe sanguin</label>
+            <select id="bloodType" formControlName="bloodType" class="form-control">
+              <option *ngFor="let bt of bloodTypes" [value]="bt">{{ bt === 'UNKNOWN' ? 'Non spécifié' : bt }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="phone">Téléphone *</label>
+            <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="+216 XX XXX XXX"
+                   [class.is-invalid]="patientForm.get('phone')?.invalid && patientForm.get('phone')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="patientEmail">Email</label>
+            <input type="email" id="patientEmail" formControlName="email" class="form-control" placeholder="patient@email.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-subsection">
+        <h4>Adresse</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="address">Adresse</label>
+            <input type="text" id="address" formControlName="address" class="form-control" placeholder="Rue, immeuble, appartement...">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">Ville</label>
+            <input type="text" id="city" formControlName="city" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="region">Région</label>
+            <select id="region" formControlName="region" class="form-control">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="postalCode">Code postal</label>
+            <input type="text" id="postalCode" formControlName="postalCode" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations médicales -->
+      <div class="form-subsection">
+        <h4>Informations médicales</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="height">Taille (cm)</label>
+            <input type="number" id="height" formControlName="height" class="form-control" placeholder="175">
+          </div>
+          <div class="form-group">
+            <label for="patientWeight">Poids (kg)</label>
+            <input type="number" id="patientWeight" formControlName="weight" class="form-control" placeholder="70" step="0.1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="allergies">Allergies (séparées par des virgules)</label>
+          <input type="text" id="allergies" formControlName="allergies" class="form-control" placeholder="Ex: Pénicilline, Arachides, Poussière...">
+        </div>
+        <div class="form-group">
+          <label for="chronicDiseases">Maladies chroniques (séparées par des virgules)</label>
+          <input type="text" id="chronicDiseases" formControlName="chronicDiseases" class="form-control" placeholder="Ex: Diabète, Hypertension, Asthme...">
+        </div>
+        <div class="form-group">
+          <label for="currentMedications">Médicaments actuels (séparés par des virgules)</label>
+          <input type="text" id="currentMedications" formControlName="currentMedications" class="form-control" placeholder="Ex: Metformine 500mg, Amlor 5mg...">
+        </div>
+      </div>
+
+      <!-- Profession -->
+      <div class="form-subsection">
+        <h4>Informations professionnelles</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="occupation">Profession</label>
+            <input type="text" id="occupation" formControlName="occupation" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="employer">Employeur</label>
+            <input type="text" id="employer" formControlName="employer" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact d'urgence -->
+      <div class="form-subsection">
+        <h4>🚨 Contact d'urgence (Obligatoire)</h4>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="emergencyContactName">Nom complet *</label>
+            <input type="text" id="emergencyContactName" formControlName="emergencyContactName" class="form-control"
+                   [class.is-invalid]="patientForm.get('emergencyContactName')?.invalid && patientForm.get('emergencyContactName')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="emergencyContactPhone">Téléphone *</label>
+            <input type="tel" id="emergencyContactPhone" formControlName="emergencyContactPhone" class="form-control" placeholder="+216 XX XXX XXX"
+                   [class.is-invalid]="patientForm.get('emergencyContactPhone')?.invalid && patientForm.get('emergencyContactPhone')?.touched">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="emergencyContactRelation">Relation avec le patient *</label>
+            <select id="emergencyContactRelation" formControlName="emergencyContactRelation" class="form-control"
+                    [class.is-invalid]="patientForm.get('emergencyContactRelation')?.invalid && patientForm.get('emergencyContactRelation')?.touched">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let rel of relations" [value]="rel">{{ rel }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="emergencyContactEmail">Email du contact</label>
+            <input type="email" id="emergencyContactEmail" formControlName="emergencyContactEmail" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Assurance -->
+      <div class="form-subsection">
+        <h4>🛡️ Assurance santé</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="insuranceProvider">Assureur</label>
+            <input type="text" id="insuranceProvider" formControlName="insuranceProvider" class="form-control" placeholder="Ex: CNAM, STAR, GAT...">
+          </div>
+          <div class="form-group">
+            <label for="insurancePolicyNumber">Numéro de police</label>
+            <input type="text" id="insurancePolicyNumber" formControlName="insurancePolicyNumber" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          ❌ Annuler
+        </button>
+        <button type="button" class="btn btn-primary" (click)="patientId ? updateExistingPatient() : createNewPatient()" [disabled]="saving">
+          <span *ngIf="saving">💾 Enregistrement...</span>
+          <span *ngIf="!saving && !patientId">💾 Créer le patient</span>
+          <span *ngIf="!saving && patientId">💾 Mettre à jour le patient</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Formulaire dossier médical -->
+  <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" *ngIf="!loading && patient">
+
+    <!-- Section 1: Consultation -->
+    <div class="form-section">
+      <h2>📅 Consultation</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="consultationDate">Date de consultation *</label>
+          <input type="date" id="consultationDate" formControlName="consultationDate" class="form-control"
+                 [class.is-invalid]="recordForm.get('consultationDate')?.invalid && recordForm.get('consultationDate')?.touched">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reasonForVisit">Motif de la visite *</label>
+        <input type="text" id="reasonForVisit" formControlName="reasonForVisit" class="form-control"
+               placeholder="Ex: Douleurs thoraciques, Fièvre persistante..."
+               [class.is-invalid]="recordForm.get('reasonForVisit')?.invalid && recordForm.get('reasonForVisit')?.touched">
+      </div>
+
+      <div class="form-group">
+        <label for="symptoms">Symptômes *</label>
+        <textarea id="symptoms" formControlName="symptoms" class="form-control" rows="3"
+                  placeholder="Décrivez les symptômes observés..."
+                  [class.is-invalid]="recordForm.get('symptoms')?.invalid && recordForm.get('symptoms')?.touched"></textarea>
+      </div>
+    </div>
+
+    <!-- Section 2: Examen physique -->
+    <div class="form-section">
+      <h2>🏥 Examen physique</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bloodPressure">Tension artérielle</label>
+          <input type="text" id="bloodPressure" formControlName="bloodPressure" class="form-control"
+                 placeholder="120/80 mmHg">
+        </div>
+
+        <div class="form-group">
+          <label for="heartRate">Fréquence cardiaque</label>
+          <input type="number" id="heartRate" formControlName="heartRate" class="form-control"
+                 placeholder="bpm">
+        </div>
+
+        <div class="form-group">
+          <label for="temperature">Température</label>
+          <input type="number" id="temperature" formControlName="temperature" class="form-control"
+                 placeholder="°C" step="0.1">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="weight">Poids</label>
+          <input type="number" id="weight" formControlName="weight" class="form-control"
+                 placeholder="kg" step="0.1">
+        </div>
+
+        <div class="form-group">
+          <label for="height">Taille</label>
+          <input type="number" id="height" formControlName="height" class="form-control"
+                 placeholder="cm">
+        </div>
+
+        <div class="form-group">
+          <label for="oxygenSaturation">Saturation O₂</label>
+          <input type="number" id="oxygenSaturation" formControlName="oxygenSaturation" class="form-control"
+                 placeholder="%">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Diagnostic -->
+    <div class="form-section">
+      <h2>🔍 Diagnostic</h2>
+      <div class="form-group">
+        <label for="diagnosis">Diagnostic *</label>
+        <textarea id="diagnosis" formControlName="diagnosis" class="form-control" rows="3"
+                  placeholder="Diagnostic établi..."
+                  [class.is-invalid]="recordForm.get('diagnosis')?.invalid && recordForm.get('diagnosis')?.touched"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Sévérité</label>
+        <div class="severity-options">
+          <label *ngFor="let sev of severities" class="severity-label"
+                 [style.border-color]="sev.color"
+                 [class.selected]="recordForm.get('severity')?.value === sev.value">
+            <input type="radio" formControlName="severity" [value]="sev.value">
+            <span class="severity-dot" [style.background-color]="sev.color"></span>
+            {{ sev.label }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Traitement -->
+    <div class="form-section">
+      <h2>💊 Traitement prescrit</h2>
+
+      <div formArrayName="medications">
+        <div *ngFor="let med of medications.controls; let i = index" [formGroupName]="i" class="medication-item">
+          <div class="item-header">
+            <h4>Médicament {{ i + 1 }}</h4>
+            <button type="button" class="btn-remove" (click)="removeMedication(i)">🗑️</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom du médicament *</label>
+              <input type="text" formControlName="name" class="form-control" placeholder="Ex: Doliprane">
+            </div>
+            <div class="form-group">
+              <label>Dosage *</label>
+              <input type="text" formControlName="dosage" class="form-control" placeholder="Ex: 500mg">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fréquence *</label>
+              <input type="text" formControlName="frequency" class="form-control" placeholder="Ex: 3 fois par jour">
+            </div>
+            <div class="form-group">
+              <label>Durée *</label>
+              <input type="text" formControlName="duration" class="form-control" placeholder="Ex: 5 jours">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Instructions</label>
+            <input type="text" formControlName="instructions" class="form-control"
+                   placeholder="Instructions spéciales (avant/après les repas, etc.)">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-add" (click)="addMedication()">
+        + Ajouter un médicament
+      </button>
+    </div>
+
+    <!-- Section 5: Tests et examens -->
+    <div class="form-section">
+      <h2>🧪 Tests et examens</h2>
+
+      <div formArrayName="labTests">
+        <div *ngFor="let test of labTests.controls; let i = index" [formGroupName]="i" class="test-item">
+          <div class="item-header">
+            <h4>Test {{ i + 1 }}</h4>
+            <button type="button" class="btn-remove" (click)="removeLabTest(i)">🗑️</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom du test *</label>
+              <input type="text" formControlName="testName" class="form-control"
+                     placeholder="Ex: NFS, Glycémie, Radiographie...">
+            </div>
+            <div class="form-group">
+              <label>Résultat</label>
+              <input type="text" formControlName="result" class="form-control"
+                     placeholder="Résultat du test">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Plage normale</label>
+              <input type="text" formControlName="normalRange" class="form-control"
+                     placeholder="Valeurs normales de référence">
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <input type="text" formControlName="notes" class="form-control"
+                     placeholder="Observations sur le résultat">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-add" (click)="addLabTest()">
+        + Ajouter un test
+      </button>
+    </div>
+
+    <!-- Section IRM: Import et Analyse d'Imagerie -->
+    <div class="form-section irm-section">
+      <h2>🧠 Analyse IRM - Intelligence Artificielle</h2>
+      <p class="section-description">Importez une IRM pour une analyse automatique par IA (détection d'anomalies, tumeurs, lésions...)</p>
+
+      <!-- Zone d'import -->
+      <div class="irm-upload-zone" *ngIf="!selectedIRMImage && !irmAnalysisResult">
+        <input type="file" #irmFileInput accept="image/*,.dcm" (change)="onIRMFileSelected($event)" style="display: none;">
+        <div class="upload-placeholder" (click)="irmFileInput.click()">
+          <div class="upload-icon">🧠</div>
+          <h4>Importer une IRM</h4>
+          <p>Cliquez ou glissez-déposez une image IRM ici</p>
+          <span class="file-types">Formats acceptés : JPG, PNG, DICOM</span>
+        </div>
+      </div>
+
+      <!-- Image sélectionnée -->
+      <div class="irm-preview" *ngIf="selectedIRMImage">
+        <div class="preview-header">
+          <h4>📷 Image IRM sélectionnée</h4>
+          <button type="button" class="btn-remove" (click)="clearIRMImage()">🗑️ Supprimer</button>
+        </div>
+        <div class="preview-content">
+          <img [src]="selectedIRMImage" alt="IRM Preview" class="irm-image">
+          <div class="preview-actions">
+            <button type="button" class="btn btn-primary btn-analyze" (click)="analyzeIRMImage()" [disabled]="analyzingIRM">
+              <span *ngIf="!analyzingIRM">🔬 Lancer l'analyse IA</span>
+              <span *ngIf="analyzingIRM">
+                <span class="spinner"></span>
+                Analyse en cours...
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résultat de l'analyse -->
+      <div class="irm-analysis-result" *ngIf="irmAnalysisResult">
+        <div class="result-header">
+          <h4>📊 Résultat de l'analyse IA</h4>
+          <span class="confidence-badge" [class.high]="irmAnalysisResult.confidence > 80" [class.medium]="irmAnalysisResult.confidence >= 50 && irmAnalysisResult.confidence <= 80" [class.low]="irmAnalysisResult.confidence < 50">
+            Confiance : {{ irmAnalysisResult.confidence }}%
+          </span>
+        </div>
+
+        <div class="result-content">
+          <!-- Diagnostic principal -->
+          <div class="diagnosis-main" [class.normal]="irmAnalysisResult.isNormal" [class.abnormal]="!irmAnalysisResult.isNormal">
+            <div class="diagnosis-icon">{{ irmAnalysisResult.isNormal ? '✅' : '⚠️' }}</div>
+            <div class="diagnosis-text">
+              <h5>{{ irmAnalysisResult.diagnosis }}</h5>
+              <p *ngIf="irmAnalysisResult.isNormal">Aucune anomalie détectée</p>
+              <p *ngIf="!irmAnalysisResult.isNormal">Anomalies détectées - Consultation recommandée</p>
+            </div>
+          </div>
+
+          <!-- Détails des détections -->
+          <div class="detections-list" *ngIf="irmAnalysisResult.detections && irmAnalysisResult.detections.length > 0">
+            <h5>🔍 Zones détectées :</h5>
+            <div class="detection-item" *ngFor="let detection of irmAnalysisResult.detections">
+              <span class="detection-type" [class]="detection.severity">{{ detection.type }}</span>
+              <span class="detection-location">{{ detection.location }}</span>
+              <span class="detection-confidence">{{ detection.confidence }}%</span>
+            </div>
+          </div>
+
+          <!-- Recommandations IA -->
+          <div class="ai-recommendations" *ngIf="irmAnalysisResult.recommendations">
+            <h5>💡 Recommandations :</h5>
+            <p>{{ irmAnalysisResult.recommendations }}</p>
+          </div>
+
+          <!-- Actions sur le résultat -->
+          <div class="result-actions">
+            <button type="button" class="btn btn-secondary" (click)="clearIRMImage()">
+              🔄 Nouvelle analyse
+            </button>
+            <button type="button" class="btn btn-primary" (click)="addIRMToClinicalNotes()">
+              📝 Ajouter aux notes cliniques
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Notes et recommandations -->
+    <div class="form-section">
+      <h2>📝 Notes et recommandations</h2>
+
+      <div class="form-group">
+        <label for="clinicalNotes">Notes cliniques</label>
+        <textarea id="clinicalNotes" formControlName="clinicalNotes" class="form-control" rows="4"
+                  placeholder="Observations cliniques détaillées..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="recommendations">Recommandations</label>
+        <textarea id="recommendations" formControlName="recommendations" class="form-control" rows="3"
+                  placeholder="Recommandations pour le patient (hygiène de vie, alimentation, repos...)"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="followUpRequired">
+            Suivi requis
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="recordForm.get('followUpRequired')?.value">
+          <label for="followUpDate">Date du prochain rendez-vous</label>
+          <input type="date" id="followUpDate" formControlName="followUpDate" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons de soumission -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="saving">
+        <span *ngIf="saving">Enregistrement...</span>
+        <span *ngIf="!saving && !patientId">💾 Enregistrer le dossier</span>
+        <span *ngIf="!saving && patientId">💾 Mettre à jour le dossier</span>
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>

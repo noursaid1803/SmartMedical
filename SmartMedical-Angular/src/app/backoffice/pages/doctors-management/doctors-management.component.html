@@ -1,0 +1,275 @@
+<div class="doctors-management-container">
+  <!-- Header -->
+  <div class="header-section">
+    <div>
+      <h1>Gestion des Médecins</h1>
+      <p class="text-muted mb-0">Gérez les médecins et leurs disponibilités</p>
+    </div>
+    <button class="btn btn-primary" (click)="toggleForm()" [disabled]="loading">
+      <span *ngIf="!showForm"><i class="bi bi-plus-lg me-2"></i>Ajouter un Médecin</span>
+      <span *ngIf="showForm"><i class="bi bi-x-lg me-2"></i>Fermer</span>
+    </button>
+  </div>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Formulaire -->
+  <div *ngIf="showForm" id="doctorForm" class="form-section">
+    <h2>{{ isEditing ? 'Modifier le Médecin' : 'Nouveau Médecin' }}</h2>
+
+    <form [formGroup]="doctorForm" (ngSubmit)="onSubmit()">
+
+      <!-- Section: Informations Personnelles -->
+      <div class="form-section-group">
+        <h3>Informations Personnelles</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="firstName">Prénom *</label>
+            <input type="text" id="firstName" formControlName="firstName" class="form-control"
+                   [class.is-invalid]="doctorForm.get('firstName')?.invalid && doctorForm.get('firstName')?.touched">
+            <div class="invalid-feedback" *ngIf="doctorForm.get('firstName')?.invalid && doctorForm.get('firstName')?.touched">
+              Le prénom est requis (min. 2 caractères)
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="lastName">Nom *</label>
+            <input type="text" id="lastName" formControlName="lastName" class="form-control"
+                   [class.is-invalid]="doctorForm.get('lastName')?.invalid && doctorForm.get('lastName')?.touched">
+            <div class="invalid-feedback" *ngIf="doctorForm.get('lastName')?.invalid && doctorForm.get('lastName')?.touched">
+              Le nom est requis (min. 2 caractères)
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="email">Email *</label>
+            <input type="email" id="email" formControlName="email" class="form-control"
+                   [class.is-invalid]="doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched">
+            <div class="invalid-feedback" *ngIf="doctorForm.get('email')?.invalid && doctorForm.get('email')?.touched">
+              Un email valide est requis
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="phone">Téléphone</label>
+            <input type="tel" id="phone" formControlName="phone" class="form-control"
+                   placeholder="+216 XX XXX XXX">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="address">Adresse</label>
+          <textarea id="address" formControlName="address" class="form-control" rows="2"
+                    placeholder="Adresse du cabinet"></textarea>
+        </div>
+      </div>
+
+      <!-- Section: Informations Professionnelles -->
+      <div class="form-section-group">
+        <h3>Informations Professionnelles</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="specialization">Spécialisation *</label>
+            <select id="specialization" formControlName="specialization" class="form-control"
+                    [class.is-invalid]="doctorForm.get('specialization')?.invalid && doctorForm.get('specialization')?.touched">
+              <option value="">Sélectionnez une spécialisation</option>
+              <option *ngFor="let spec of specializations" [value]="spec">{{ spec }}</option>
+            </select>
+            <div class="invalid-feedback" *ngIf="doctorForm.get('specialization')?.invalid && doctorForm.get('specialization')?.touched">
+              La spécialisation est requise
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label for="licenseNumber">Numéro de Licence *</label>
+            <input type="text" id="licenseNumber" formControlName="licenseNumber" class="form-control"
+                   placeholder="Numéro d'ordre des médecins"
+                   [class.is-invalid]="doctorForm.get('licenseNumber')?.invalid && doctorForm.get('licenseNumber')?.touched">
+            <div class="invalid-feedback" *ngIf="doctorForm.get('licenseNumber')?.invalid && doctorForm.get('licenseNumber')?.touched">
+              Le numéro de licence est requis
+            </div>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="education">Formation / Diplômes</label>
+            <input type="text" id="education" formControlName="education" class="form-control"
+                   placeholder="Ex: Doctorat en Médecine, Faculté de Paris">
+          </div>
+
+          <div class="form-group">
+            <label for="experience">Années d'expérience</label>
+            <input type="text" id="experience" formControlName="experience" class="form-control"
+                   placeholder="Ex: 10 ans">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="hospital">Hôpital / Clinique</label>
+            <input type="text" id="hospital" formControlName="hospital" class="form-control"
+                   placeholder="Nom de l'établissement">
+          </div>
+
+          <div class="form-group">
+            <label for="department">Département / Service</label>
+            <input type="text" id="department" formControlName="department" class="form-control"
+                   placeholder="Ex: Service de Cardiologie">
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Disponibilités -->
+      <div class="form-section-group">
+        <h3>Disponibilités</h3>
+
+        <div class="form-group">
+          <label>Jours disponibles</label>
+          <div class="days-selector">
+            <button type="button" *ngFor="let day of daysOfWeek"
+                    class="day-btn"
+                    [class.selected]="isDaySelected(day.value)"
+                    (click)="toggleDay(day.value)">
+              {{ day.label }}
+            </button>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startTime">Heure de début</label>
+            <input type="time" id="startTime" formControlName="startTime" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="endTime">Heure de fin</label>
+            <input type="time" id="endTime" formControlName="endTime" class="form-control">
+          </div>
+
+          <div class="form-group">
+            <label for="consultationDuration">Durée consultation (min)</label>
+            <select id="consultationDuration" formControlName="consultationDuration" class="form-control">
+              <option value="15">15 minutes</option>
+              <option value="30">30 minutes</option>
+              <option value="45">45 minutes</option>
+              <option value="60">1 heure</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
+      <!-- Section: Tarifs et Bio -->
+      <div class="form-section-group">
+        <h3>Tarifs et Présentation</h3>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="consultationFee">Frais de consultation</label>
+            <input type="text" id="consultationFee" formControlName="consultationFee" class="form-control"
+                   placeholder="Ex: 80 DT">
+          </div>
+
+          <div class="form-group">
+            <label for="languages">Langues parlées</label>
+            <input type="text" id="languages" formControlName="languages" class="form-control"
+                   placeholder="Ex: Français, Arabe, Anglais">
+          </div>
+        </div>
+
+        <div class="form-group">
+          <label for="bio">Biographie / Présentation</label>
+          <textarea id="bio" formControlName="bio" class="form-control" rows="4"
+                    placeholder="Décrivez l'expérience et les compétences du médecin..."></textarea>
+        </div>
+      </div>
+
+      <!-- Mot de passe (création seulement) -->
+      <div class="form-section-group" *ngIf="!isEditing">
+        <h3>Sécurité</h3>
+        <div class="form-group">
+          <label for="password">Mot de passe temporaire (optionnel)</label>
+          <input type="password" id="password" formControlName="password" class="form-control"
+                 placeholder="Laissez vide pour générer automatiquement">
+          <small class="form-text text-muted">
+            Si vide, un mot de passe temporaire sera généré et envoyé par email au médecin.
+          </small>
+        </div>
+      </div>
+
+      <!-- Boutons -->
+      <div class="form-actions">
+        <button type="submit" class="btn btn-success" [disabled]="loading">
+          <span *ngIf="loading" class="spinner"></span>
+          <span *ngIf="!loading && !isEditing"><i class="bi bi-check-lg me-2"></i>Créer le Médecin</span>
+          <span *ngIf="!loading && isEditing"><i class="bi bi-check-lg me-2"></i>Mettre à jour</span>
+        </button>
+        <button type="button" class="btn btn-secondary" (click)="cancelEdit()" [disabled]="loading">
+          <i class="bi bi-x-lg me-2"></i>Annuler
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Liste des médecins -->
+  <div class="doctors-list-section">
+    <h2>Liste des Médecins</h2>
+
+    <div *ngIf="loading && doctors.length === 0" class="loading-indicator">
+      Chargement des médecins...
+    </div>
+
+    <div *ngIf="doctors.length === 0 && !loading" class="no-data">
+      Aucun médecin enregistré.
+    </div>
+
+    <div class="doctors-grid" *ngIf="doctors.length > 0">
+      <div *ngFor="let doctor of doctors" class="doctor-card" [class.inactive]="!doctor.active">
+        <div class="card-header">
+          <div class="doctor-avatar">
+            {{ doctor.firstName[0] }}{{ doctor.lastName[0] }}
+          </div>
+          <div class="doctor-info">
+            <h3>Dr. {{ doctor.firstName }} {{ doctor.lastName }}</h3>
+            <span class="specialization">{{ doctor.specialization }}</span>
+            <span class="status-badge" [class.active]="doctor.active" [class.inactive]="!doctor.active">
+              {{ doctor.active ? 'Actif' : 'Inactif' }}
+            </span>
+          </div>
+        </div>
+
+        <div class="card-body">
+          <p><strong>Email:</strong> {{ doctor.email }}</p>
+          <p *ngIf="doctor.phone"><strong>Tél:</strong> {{ doctor.phone }}</p>
+          <p *ngIf="doctor.hospital"><strong>Hôpital:</strong> {{ doctor.hospital }}</p>
+          <p *ngIf="doctor.consultationFee"><strong>Tarif:</strong> {{ doctor.consultationFee }}</p>
+          <p *ngIf="doctor.availableDays?.length">
+            <strong>Disponible:</strong> {{ doctor.availableDays?.join(', ') }}
+          </p>
+        </div>
+
+        <div class="card-actions">
+          <button class="btn btn-sm btn-info" (click)="editDoctor(doctor)" title="Modifier">
+            <i class="bi bi-pencil-square"></i> Modifier
+          </button>
+          <button class="btn btn-sm" [class.btn-warning]="doctor.active" [class.btn-success]="!doctor.active"
+                  (click)="toggleStatus(doctor.id!)" title="Activer/Désactiver">
+            <i class="bi" [class.bi-pause-circle]="doctor.active" [class.bi-play-circle]="!doctor.active"></i>
+            {{ doctor.active ? 'Désactiver' : 'Activer' }}
+          </button>
+          <button class="btn btn-sm btn-danger" (click)="deleteDoctor(doctor.id!)" title="Supprimer">
+            <i class="bi bi-trash3"></i> Supprimer
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

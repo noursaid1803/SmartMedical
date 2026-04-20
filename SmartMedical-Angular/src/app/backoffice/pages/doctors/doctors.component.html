@@ -1,0 +1,64 @@
+<div class="doctors-page">
+  <!-- Page Header -->
+  <div class="d-flex justify-content-between align-items-center mb-4">
+    <div>
+      <h2 class="mb-1">Gestion des Médecins</h2>
+      <p class="text-muted mb-0">{{ doctors.length }} médecins</p>
+    </div>
+    <button class="btn btn-primary">
+      <i class="bi bi-plus-lg me-2"></i>
+      Nouveau médecin
+    </button>
+  </div>
+
+  <!-- Doctors Table -->
+  <div class="card border-0 shadow-sm">
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead class="table-light">
+            <tr>
+              <th>ID</th>
+              <th>Nom</th>
+              <th>Spécialité</th>
+              <th>Email</th>
+              <th>Téléphone</th>
+              <th>Patients</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let doctor of doctors">
+              <td>#{{ doctor.id }}</td>
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="avatar bg-success-subtle text-success rounded-circle me-2" style="width: 35px; height: 35px; display: flex; align-items: center; justify-content: center;">
+                    <i class="bi bi-heart-pulse"></i>
+                  </div>
+                  {{ doctor.name }}
+                </div>
+              </td>
+              <td>{{ doctor.specialty }}</td>
+              <td>{{ doctor.email }}</td>
+              <td>{{ doctor.phone }}</td>
+              <td>
+                <span class="badge bg-info">{{ doctor.patients }}</span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-outline-primary me-1">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-secondary me-1">
+                  <i class="bi bi-pencil"></i>
+                </button>
+                <button class="btn btn-sm btn-outline-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

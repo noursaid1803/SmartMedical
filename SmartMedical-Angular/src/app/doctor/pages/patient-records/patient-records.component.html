@@ -1,0 +1,65 @@
+<div class="patient-records-container">
+  <!-- Page Header -->
+  <header class="page-header">
+    <div class="header-content">
+      <div class="header-title">
+        <h1><i class="bi bi-people"></i> Mes Patients</h1>
+        <p>Gérez vos patients et leurs dossiers médicaux</p>
+      </div>
+      <div class="header-actions">
+        <a class="btn btn-primary" routerLink="/doctor/medical-record">
+          <i class="bi bi-person-plus"></i>
+          Nouveau Patient
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Search Section -->
+  <section class="search-section">
+    <div class="search-box">
+      <i class="bi bi-search"></i>
+      <input type="text" [(ngModel)]="searchQuery" (input)="searchPatients()" placeholder="Rechercher un patient (nom, email, téléphone)...">
+    </div>
+  </section>
+
+  <!-- Main Content -->
+  <div class="content-grid">
+    <!-- Patients List -->
+    <div class="patients-list">
+      <h2>Liste des patients</h2>
+
+      <div *ngIf="loading" class="loading">Chargement...</div>
+
+      <div *ngIf="!loading && filteredPatients.length === 0" class="empty-state">
+        <p>Aucun patient trouvé</p>
+      </div>
+
+      <div class="patient-cards" *ngIf="!loading">
+        <div class="patient-card" *ngFor="let patient of filteredPatients">
+          <div class="patient-avatar">
+            {{ (patient.firstName && patient.firstName[0]) || '?' }}{{ (patient.lastName && patient.lastName[0]) || '?' }}
+          </div>
+          <div class="patient-info">
+            <h3>{{ getFullName(patient) }}</h3>
+            <p class="patient-meta">
+              <span *ngIf="patient.gender">{{ patient.gender === 'M' ? '👨' : '👩' }}</span>
+              <span *ngIf="patient.dateOfBirth">{{ getAge(patient.dateOfBirth) }} ans</span>
+              <span *ngIf="patient.bloodType" class="blood-type">🩸 {{ patient.bloodType }}</span>
+            </p>
+            <p class="contact" *ngIf="patient.phone">📞 {{ patient.phone }}</p>
+          </div>
+          <div class="patient-actions">
+            <a class="btn-icon edit" [routerLink]="['/doctor/medical-record', patient.id]" (click)="$event.stopPropagation()" title="Modifier le patient">
+              ✏️
+            </a>
+            <button class="btn-icon delete" (click)="deletePatient(patient, $event)" title="Supprimer le patient">
+              🗑️
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</div>

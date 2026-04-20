@@ -1,0 +1,17 @@
+.footer {
+  a {
+    transition: color 0.3s;
+    
+    &:hover {
+      color: var(--primary-color) !important;
+    }
+  }
+  
+  .social-links a {
+    font-size: 1.2rem;
+    
+    &:hover {
+      color: var(--primary-color) !important;
+    }
+  }
+}

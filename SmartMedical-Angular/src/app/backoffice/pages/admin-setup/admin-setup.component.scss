@@ -1,0 +1,24 @@
+.admin-setup-page {
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+  }
+
+  .btn-success {
+    background: linear-gradient(135deg, #11998e 0%, #38ef7d 100%);
+    border: none;
+  }
+
+  .form-control:disabled {
+    background-color: #e9ecef;
+    cursor: not-allowed;
+  }
+
+  .card {
+    transition: transform 0.2s;
+
+    &:hover {
+      transform: translateY(-2px);
+    }
+  }
+}

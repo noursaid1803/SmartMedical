@@ -1,0 +1,85 @@
+<div class="dashboard">
+  <!-- Header -->
+  <div class="dashboard-header d-flex justify-content-between align-items-center">
+    <h2>Tableau de bord</h2>
+    <div class="date-display">
+      <i class="bi bi-calendar3 me-2"></i>{{ today | date:'fullDate' }}
+    </div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="row g-4 mb-4">
+    <div class="col-md-6 col-lg-3" *ngFor="let stat of stats">
+      <div class="card stat-card h-100">
+        <div class="card-body">
+          <div class="d-flex align-items-center">
+            <div class="stat-icon me-3" [class]="'bg-' + stat.color + '-subtle'">
+              <i [class]="'bi ' + stat.icon + ' text-' + stat.color"></i>
+            </div>
+            <div class="stat-content">
+              <h6>{{ stat.title }}</h6>
+              <h4>{{ stat.value }}</h4>
+              <span class="stat-trend text-success">
+                <i class="bi bi-arrow-up-short"></i>{{ stat.trend }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Appointments -->
+  <div class="card appointments-card border-0">
+    <div class="card-header">
+      <div class="d-flex justify-content-between align-items-center">
+        <h5 class="mb-0">Rendez-vous récents</h5>
+        <a routerLink="/admin/appointments" class="btn btn-sm btn-primary">Voir tout</a>
+      </div>
+    </div>
+    <div class="card-body p-0">
+      <div class="table-responsive">
+        <table class="table table-hover mb-0">
+          <thead>
+            <tr>
+              <th>Patient</th>
+              <th>Médecin</th>
+              <th>Date</th>
+              <th>Heure</th>
+              <th>Statut</th>
+              <th>Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr *ngFor="let appointment of recentAppointments">
+              <td>
+                <div class="d-flex align-items-center">
+                  <div class="patient-avatar me-2">
+                    <i class="bi bi-person"></i>
+                  </div>
+                  {{ appointment.patient }}
+                </div>
+              </td>
+              <td>{{ appointment.doctor }}</td>
+              <td>{{ appointment.date | date:'dd/MM/yyyy' }}</td>
+              <td>{{ appointment.time }}</td>
+              <td>
+                <span class="badge" [class.bg-success]="appointment.status === 'confirmé'" [class.bg-warning]="appointment.status === 'en attente'">
+                  {{ appointment.status }}
+                </span>
+              </td>
+              <td>
+                <button class="btn btn-sm btn-link text-primary">
+                  <i class="bi bi-eye"></i>
+                </button>
+                <button class="btn btn-sm btn-link text-danger">
+                  <i class="bi bi-trash"></i>
+                </button>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>

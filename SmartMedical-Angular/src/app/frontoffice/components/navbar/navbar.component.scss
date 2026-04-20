@@ -1,0 +1,22 @@
+.navbar {
+  padding: 1rem 0;
+}
+
+.navbar-brand {
+  font-size: 1.5rem;
+  font-weight: 600;
+}
+
+.nav-link {
+  font-weight: 500;
+  color: #333 !important;
+  
+  &:hover, &.active {
+    color: var(--primary-color) !important;
+  }
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  border: none;
+}

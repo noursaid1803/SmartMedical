@@ -1,0 +1,26 @@
+.doctors-page {
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+  }
+  
+  .avatar {
+    font-size: 0.875rem;
+  }
+  
+  .table {
+    th {
+      font-weight: 600;
+      font-size: 0.875rem;
+    }
+    
+    td {
+      font-size: 0.875rem;
+      vertical-align: middle;
+    }
+  }
+  
+  .btn-sm {
+    padding: 0.25rem 0.5rem;
+  }
+}

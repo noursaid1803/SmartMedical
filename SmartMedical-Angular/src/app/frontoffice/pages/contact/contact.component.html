@@ -1,0 +1,161 @@
+<!-- Page Header -->
+<section class="page-header py-5 bg-primary text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1 class="display-5 fw-bold">Contact</h1>
+        <p class="lead mb-0">Nous sommes à votre écoute</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Contact Section -->
+<section class="contact-section py-5">
+  <div class="container">
+    <div class="row">
+      <!-- Contact Info -->
+      <div class="col-lg-4 mb-4">
+        <h4 class="mb-4">Informations de contact</h4>
+        
+        <div class="contact-info mb-4">
+          <div class="d-flex mb-3">
+            <div class="icon-wrapper me-3">
+              <i class="bi bi-geo-alt text-primary fs-4"></i>
+            </div>
+            <div>
+              <h6 class="mb-1">Adresse</h6>
+              <p class="text-muted mb-0">123 Rue de la Santé<br>75001 Paris, France</p>
+            </div>
+          </div>
+          
+          <div class="d-flex mb-3">
+            <div class="icon-wrapper me-3">
+              <i class="bi bi-telephone text-primary fs-4"></i>
+            </div>
+            <div>
+              <h6 class="mb-1">Téléphone</h6>
+              <p class="text-muted mb-0">+33 1 23 45 67 89</p>
+            </div>
+          </div>
+          
+          <div class="d-flex mb-3">
+            <div class="icon-wrapper me-3">
+              <i class="bi bi-envelope text-primary fs-4"></i>
+            </div>
+            <div>
+              <h6 class="mb-1">Email</h6>
+              <p class="text-muted mb-0">contact&#64;smartmedical.fr</p>
+            </div>
+          </div>
+          
+          <div class="d-flex">
+            <div class="icon-wrapper me-3">
+              <i class="bi bi-clock text-primary fs-4"></i>
+            </div>
+            <div>
+              <h6 class="mb-1">Horaires</h6>
+              <p class="text-muted mb-0">Lun - Ven: 8h - 20h<br>Samedi: 9h - 17h</p>
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <!-- Contact Form -->
+      <div class="col-lg-8">
+        <div class="card border-0 shadow">
+          <div class="card-body p-4">
+            <h4 class="mb-4">Envoyez-nous un message</h4>
+            
+            <div *ngIf="submitSuccess" class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i>
+              Votre message a été envoyé avec succès !
+            </div>
+            
+            <form [formGroup]="contactForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="name" class="form-label">Nom complet *</label>
+                  <input 
+                    type="text" 
+                    id="name" 
+                    class="form-control" 
+                    formControlName="name"
+                    placeholder="Votre nom"
+                  />
+                  <div *ngIf="contactForm.get('name')?.invalid && contactForm.get('name')?.touched" class="text-danger small">
+                    Nom requis (min 2 caractères)
+                  </div>
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email *</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    class="form-control" 
+                    formControlName="email"
+                    placeholder="votre@email.com"
+                  />
+                  <div *ngIf="contactForm.get('email')?.invalid && contactForm.get('email')?.touched" class="text-danger small">
+                    Email invalide
+                  </div>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label">Téléphone</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    class="form-control" 
+                    formControlName="phone"
+                    placeholder="Votre téléphone"
+                  />
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="subject" class="form-label">Sujet *</label>
+                  <select id="subject" class="form-select" formControlName="subject">
+                    <option value="">Choisir un sujet</option>
+                    <option value="appointment">Prise de rendez-vous</option>
+                    <option value="info">Demande d'information</option>
+                    <option value="complaint">Réclamation</option>
+                    <option value="other">Autre</option>
+                  </select>
+                  <div *ngIf="contactForm.get('subject')?.invalid && contactForm.get('subject')?.touched" class="text-danger small">
+                    Sujet requis
+                  </div>
+                </div>
+              </div>
+              
+              <div class="mb-3">
+                <label for="message" class="form-label">Message *</label>
+                <textarea 
+                  id="message" 
+                  class="form-control" 
+                  rows="5"
+                  formControlName="message"
+                  placeholder="Votre message..."
+                ></textarea>
+                <div *ngIf="contactForm.get('message')?.invalid && contactForm.get('message')?.touched" class="text-danger small">
+                  Message requis (min 10 caractères)
+                </div>
+              </div>
+              
+              <button 
+                type="submit" 
+                class="btn btn-primary"
+                [disabled]="contactForm.invalid || isSubmitting"
+              >
+                <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                {{ isSubmitting ? 'Envoi...' : 'Envoyer le message' }}
+              </button>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

@@ -1,0 +1,80 @@
+<aside class="doctor-sidebar" [class.collapsed]="collapsed">
+  <!-- Brand Section -->
+  <div class="sidebar-brand">
+    <a routerLink="/doctor" class="brand-link">
+      <div class="brand-icon">
+        <i class="bi bi-heart-pulse-fill"></i>
+      </div>
+      <span class="brand-text" *ngIf="!collapsed">
+        <span class="brand-title">SmartMedical</span>
+        <span class="brand-subtitle">Espace Médecin</span>
+      </span>
+    </a>
+  </div>
+
+  <!-- Doctor Profile Card -->
+  <div class="doctor-profile" *ngIf="!collapsed">
+    <div class="profile-avatar">
+      <i class="bi bi-person-circle"></i>
+    </div>
+    <div class="profile-info">
+      <h4 class="profile-name">{{ doctorName }}</h4>
+      <span class="profile-badge">
+        <i class="bi bi-patch-check-fill"></i>
+        {{ doctorSpecialty }}
+      </span>
+    </div>
+  </div>
+
+  <!-- Compact Profile (when collapsed) -->
+  <div class="doctor-profile-compact" *ngIf="collapsed">
+    <div class="profile-avatar-compact">
+      <i class="bi bi-person-circle"></i>
+    </div>
+  </div>
+
+  <!-- Navigation -->
+  <nav class="sidebar-nav">
+    <div class="nav-section" *ngIf="!collapsed">
+      <span class="nav-section-title">Menu Principal</span>
+    </div>
+    
+    <ul class="nav-list">
+      <li class="nav-item" *ngFor="let item of menuItems">
+        <a 
+          class="nav-link" 
+          [routerLink]="item.path"
+          routerLinkActive="active"
+          [routerLinkActiveOptions]="{ exact: item.path === '/doctor' }"
+        >
+          <span class="nav-icon">
+            <i [class]="'bi ' + item.icon"></i>
+          </span>
+          <span class="nav-text" *ngIf="!collapsed">{{ item.label }}</span>
+          <span class="nav-badge" *ngIf="!collapsed && item.badge && item.badge > 0">
+            {{ item.badge }}
+          </span>
+        </a>
+      </li>
+    </ul>
+  </nav>
+
+  <!-- Sidebar Footer -->
+  <div class="sidebar-footer" *ngIf="!collapsed">
+    <div class="footer-info">
+      <i class="bi bi-shield-check"></i>
+      <span>Accès sécurisé</span>
+    </div>
+    <a routerLink="/frontoffice" class="btn-back">
+      <i class="bi bi-box-arrow-left"></i>
+      Retour au site
+    </a>
+  </div>
+
+  <!-- Collapsed Footer -->
+  <div class="sidebar-footer-collapsed" *ngIf="collapsed">
+    <a routerLink="/frontoffice" class="btn-back-compact" title="Retour au site">
+      <i class="bi bi-box-arrow-left"></i>
+    </a>
+  </div>
+</aside>

@@ -1,0 +1,120 @@
+<!-- Page Header -->
+<section class="page-header py-5 bg-primary text-white">
+  <div class="container">
+    <div class="row">
+      <div class="col-lg-8">
+        <h1 class="display-5 fw-bold">Prendre Rendez-vous</h1>
+        <p class="lead mb-0">Réservez votre consultation en quelques clics</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Appointment Form -->
+<section class="appointment-section py-5">
+  <div class="container">
+    <div class="row justify-content-center">
+      <div class="col-lg-8">
+        <div class="card border-0 shadow">
+          <div class="card-body p-4">
+            <div *ngIf="submitSuccess" class="alert alert-success">
+              <i class="bi bi-check-circle me-2"></i>
+              Votre rendez-vous a été demandé avec succès ! Vous recevrez une confirmation par email.
+            </div>
+            
+            <form [formGroup]="appointmentForm" (ngSubmit)="onSubmit()">
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="patientName" class="form-label">Nom complet *</label>
+                  <input 
+                    type="text" 
+                    id="patientName" 
+                    class="form-control" 
+                    formControlName="patientName"
+                    placeholder="Votre nom"
+                  />
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="email" class="form-label">Email *</label>
+                  <input 
+                    type="email" 
+                    id="email" 
+                    class="form-control" 
+                    formControlName="email"
+                    placeholder="votre@email.com"
+                  />
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="phone" class="form-label">Téléphone *</label>
+                  <input 
+                    type="tel" 
+                    id="phone" 
+                    class="form-control" 
+                    formControlName="phone"
+                    placeholder="Votre téléphone"
+                  />
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="doctorId" class="form-label">Médecin *</label>
+                  <select id="doctorId" class="form-select" formControlName="doctorId">
+                    <option value="">Choisir un médecin</option>
+                    <option *ngFor="let doctor of doctors" [value]="doctor.id">
+                      {{ doctor.name }} - {{ doctor.specialty }}
+                    </option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="row">
+                <div class="col-md-6 mb-3">
+                  <label for="date" class="form-label">Date *</label>
+                  <input 
+                    type="date" 
+                    id="date" 
+                    class="form-control" 
+                    formControlName="date"
+                  />
+                </div>
+                
+                <div class="col-md-6 mb-3">
+                  <label for="time" class="form-label">Heure *</label>
+                  <select id="time" class="form-select" formControlName="time">
+                    <option value="">Choisir une heure</option>
+                    <option *ngFor="let time of timeSlots" [value]="time">{{ time }}</option>
+                  </select>
+                </div>
+              </div>
+              
+              <div class="mb-4">
+                <label for="reason" class="form-label">Motif de la consultation *</label>
+                <textarea 
+                  id="reason" 
+                  class="form-control" 
+                  rows="4"
+                  formControlName="reason"
+                  placeholder="Décrivez brièvement le motif de votre consultation..."
+                ></textarea>
+              </div>
+              
+              <div class="d-grid">
+                <button 
+                  type="submit" 
+                  class="btn btn-primary btn-lg"
+                  [disabled]="appointmentForm.invalid || isSubmitting"
+                >
+                  <span *ngIf="isSubmitting" class="spinner-border spinner-border-sm me-2"></span>
+                  {{ isSubmitting ? 'Réservation en cours...' : 'Confirmer le rendez-vous' }}
+                </button>
+              </div>
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
