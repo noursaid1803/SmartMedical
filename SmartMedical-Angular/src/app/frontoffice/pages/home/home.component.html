@@ -1,186 +1,273 @@
-<!-- Hero Section avec image de fond -->
-<section class="hero-section position-relative">
+<!-- Hero Section Moderne et Élégant -->
+<section class="hero-section">
   <div class="hero-bg">
-    <img [src]="images.heroBg" alt="Medical background" class="w-100 h-100 object-fit-cover">
+    <img [src]="images.heroBg" alt="Medical background" class="hero-image">
     <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
   </div>
-  <div class="container position-relative z-1 py-5">
-    <div class="row align-items-center min-vh-75">
-      <div class="col-lg-6">
-        <h1 class="display-4 fw-bold mb-4 text-white">
-          Votre santé, <br>
-          <span class="text-info">notre priorité</span>
+  
+  <div class="container hero-content">
+    <div class="row align-items-center min-vh-80">
+      <div class="col-lg-7 hero-text">
+        <div class="badge badge-hero mb-3">
+          <i class="bi bi-shield-check me-2"></i>
+          Santé digitale de confiance
+        </div>
+        
+        <h1 class="hero-title">
+          Votre santé,
+          <span class="gradient-text">notre priorité</span>
         </h1>
-        <p class="lead text-white-75 mb-4">
-          SmartMedical vous offre une solution complète pour gérer votre santé. 
-          Prenez rendez-vous en ligne, consultez vos résultats et communiquez avec vos médecins en toute simplicité.
+        
+        <p class="hero-description">
+          SmartMedical révolutionne votre expérience de santé avec des solutions médicales 
+          innovantes. Prenez rendez-vous en ligne, accédez à vos résultats en temps réel 
+          et communiquez avec vos médecins en toute simplicité.
         </p>
-        <div class="d-flex gap-3">
-          <a routerLink="/frontoffice/appointment" class="btn btn-primary btn-lg">
+        
+        <div class="hero-buttons">
+          <a routerLink="/frontoffice/appointment" class="btn btn-primary btn-hero">
             <i class="bi bi-calendar-check me-2"></i>
-            Prendre RDV
+            Prendre rendez-vous
           </a>
-          <a routerLink="/frontoffice/services" class="btn btn-outline-light btn-lg">
-            Nos services
+          <a routerLink="/frontoffice/services" class="btn btn-outline-hero">
+            <i class="bi bi-play-circle me-2"></i>
+            Découvrir nos services
           </a>
+        </div>
+        
+        <!-- Stats rapides -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">15K+</span>
+            <span class="stat-label">Patients satisfaits</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Médecins experts</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">4.9</span>
+            <span class="stat-label">Note moyenne</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-image-float">
+          <div class="floating-card card-1">
+            <i class="bi bi-heart-pulse"></i>
+            <span>Cardiologie</span>
+          </div>
+          <div class="floating-card card-2">
+            <i class="bi bi-shield-check"></i>
+            <span>Certifié</span>
+          </div>
         </div>
       </div>
     </div>
   </div>
+  
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    <span>Scroll</span>
+  </div>
 </section>
 
-<!-- Services Section -->
-<section class="services-section py-5 bg-light">
+<!-- Services Section Moderne -->
+<section class="services-section">
   <div class="container">
-    <div class="text-center mb-5">
-      <h2 class="fw-bold">Nos Services Médicaux</h2>
-      <p class="text-muted">Des spécialistes à votre service pour tous vos besoins de santé</p>
+    <div class="section-header text-center">
+      <span class="section-badge">Nos Spécialités</span>
+      <h2 class="section-title">Services médicaux d'excellence</h2>
+      <p class="section-subtitle">Des soins personnalisés par des experts dans chaque domaine</p>
     </div>
     
-    <div class="row g-4">
-      <div class="col-md-6 col-lg-4" *ngFor="let service of services">
-        <div class="card h-100 border-0 shadow-sm service-card">
-          <div class="card-body text-center p-4">
-            <div class="icon-wrapper mb-3">
-              <i [class]="'bi ' + service.icon + ' text-primary fs-1'"></i>
-            </div>
-            <h5 class="card-title">{{ service.title }}</h5>
-            <p class="card-text text-muted">{{ service.description }}</p>
-          </div>
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services; let i = index" [style.animation-delay]="i * 0.1 + 's'">
+        <div class="service-icon">
+          <i [class]="'bi ' + service.icon"></i>
+          <div class="icon-bg"></div>
         </div>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- About Section avec image -->
-<section class="about-section py-5">
-  <div class="container">
-    <div class="row align-items-center">
-      <div class="col-lg-6 mb-4 mb-lg-0">
-        <div class="about-image-wrapper position-relative">
-          <img [src]="images.about" alt="Notre clinique" class="img-fluid rounded-4 shadow-lg">
-          <div class="experience-badge bg-primary text-white rounded-3 shadow">
-            <h3 class="mb-0 fw-bold">15+</h3>
-            <small>Années d'expérience</small>
-          </div>
-        </div>
-      </div>
-      <div class="col-lg-6">
-        <h5 class="text-primary fw-semibold mb-2">À propos de nous</h5>
-        <h2 class="fw-bold mb-4">Des soins médicaux de qualité pour tous</h2>
-        <p class="text-muted mb-4">
-          SmartMedical est une clinique moderne équipée des dernières technologies médicales. 
-          Notre équipe de médecins spécialistes et de soignants qualifiés s'engage à vous offrir 
-          des soins personnalisés dans un environnement accueillant et rassurant.
-        </p>
-        <div class="row g-3 mb-4">
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-primary fs-4 me-2"></i>
-              <span>Équipement de pointe</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-primary fs-4 me-2"></i>
-              <span>Médecins experts</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-primary fs-4 me-2"></i>
-              <span>Service 24h/24</span>
-            </div>
-          </div>
-          <div class="col-6">
-            <div class="d-flex align-items-center">
-              <i class="bi bi-check-circle-fill text-primary fs-4 me-2"></i>
-              <span>Rendez-vous rapides</span>
-            </div>
-          </div>
-        </div>
-        <a routerLink="/frontoffice/about" class="btn btn-primary">
-          <i class="bi bi-arrow-right me-2"></i>
-          En savoir plus
+        <h3 class="service-title">{{ service.title }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+        <a href="#" class="service-link">
+          En savoir plus <i class="bi bi-arrow-right"></i>
         </a>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Stats Section avec background -->
-<section class="stats-section py-5 bg-dark text-white position-relative">
-  <div class="container position-relative z-1">
-    <div class="row text-center">
-      <div class="col-md-3 mb-4">
-        <h3 class="display-5 fw-bold text-info">50+</h3>
-        <p class="text-white-75">Médecins spécialistes</p>
-      </div>
-      <div class="col-md-3 mb-4">
-        <h3 class="display-5 fw-bold text-info">10K+</h3>
-        <p class="text-white-75">Patients satisfaits</p>
-      </div>
-      <div class="col-md-3 mb-4">
-        <h3 class="display-5 fw-bold text-info">15+</h3>
-        <p class="text-white-75">Années d'expérience</p>
-      </div>
-      <div class="col-md-3 mb-4">
-        <h3 class="display-5 fw-bold text-info">24/7</h3>
-        <p class="text-white-75">Support disponible</p>
-      </div>
-    </div>
-  </div>
-</section>
-
-<!-- Testimonials Section -->
-<section class="testimonials-section py-5 bg-light">
+<!-- About Section Moderne -->
+<section class="about-section">
   <div class="container">
-    <div class="text-center mb-5">
-      <h5 class="text-primary fw-semibold">Témoignages</h5>
-      <h2 class="fw-bold">Ce que disent nos patients</h2>
-    </div>
-    
-    <div class="row g-4">
-      <div class="col-md-4" *ngFor="let testimonial of testimonials">
-        <div class="card h-100 border-0 shadow-sm testimonial-card">
-          <div class="card-body p-4">
-            <div class="d-flex align-items-center mb-3">
-              <img [src]="testimonial.image" [alt]="testimonial.name" class="rounded-circle me-3" style="width: 60px; height: 60px; object-fit: cover;">
-              <div>
-                <h6 class="mb-0 fw-bold">{{ testimonial.name }}</h6>
-                <small class="text-muted">{{ testimonial.role }}</small>
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="about-image-wrapper">
+          <div class="image-main">
+            <img [src]="images.about" alt="Notre clinique">
+            <div class="image-decoration"></div>
+          </div>
+          <div class="experience-badge">
+            <div class="badge-content">
+              <span class="badge-number">15+</span>
+              <span class="badge-text">Années d'expérience</span>
+            </div>
+          </div>
+          <div class="floating-stat stat-1">
+            <i class="bi bi-award"></i>
+            <span>Certifié ISO</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-content">
+          <span class="section-label">À propos de nous</span>
+          <h2 class="about-title">Des soins médicaux de qualité pour tous</h2>
+          <p class="about-description">
+            SmartMedical est une clinique moderne équipée des dernières technologies médicales. 
+            Notre équipe de médecins spécialistes et de soignants qualifiés s'engage à vous offrir 
+            des soins personnalisés dans un environnement accueillant et rassurant.
+          </p>
+          
+          <div class="features-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
               </div>
+              <span>Équipement médical de pointe</span>
             </div>
-            <div class="mb-3">
-              <i class="bi bi-star-fill text-warning"></i>
-              <i class="bi bi-star-fill text-warning"></i>
-              <i class="bi bi-star-fill text-warning"></i>
-              <i class="bi bi-star-fill text-warning"></i>
-              <i class="bi bi-star-fill text-warning"></i>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Médecins spécialistes reconnus</span>
             </div>
-            <p class="text-muted mb-0 fst-italic">"{{ testimonial.text }}"</p>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Service d'urgence 24h/24</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Rendez-vous en ligne simplifiés</span>
+            </div>
           </div>
+          
+          <a routerLink="/frontoffice/about" class="btn btn-about">
+            <span>En savoir plus</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
         </div>
       </div>
     </div>
   </div>
 </section>
 
-<!-- Gallery Section -->
-<section class="gallery-section py-5">
+<!-- Stats Section Moderne avec Glassmorphism -->
+<section class="stats-section">
+  <div class="stats-bg"></div>
   <div class="container">
-    <div class="text-center mb-5">
-      <h5 class="text-primary fw-semibold">Galerie</h5>
-      <h2 class="fw-bold">Notre clinique en images</h2>
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-person-heart"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="50">50+</h3>
+          <p class="stat-label">Médecins spécialistes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="10000">10K+</h3>
+          <p class="stat-label">Patients satisfaits</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="15">15+</h3>
+          <p class="stat-label">Années d'expérience</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-headset"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">24/7</h3>
+          <p class="stat-label">Support disponible</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section Moderne -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-badge">Témoignages</span>
+      <h2 class="section-title">Ce que disent nos patients</h2>
+      <p class="section-subtitle">Des histoires réelles de patients satisfaits</p>
     </div>
     
-    <div class="row g-3">
-      <div class="col-lg-3 col-md-4 col-6" *ngFor="let image of gallery; let i = index">
-        <div class="gallery-item position-relative overflow-hidden rounded-3">
-          <img [src]="image" [alt]="'Image clinique ' + (i + 1)" class="img-fluid w-100" style="height: 250px; object-fit: cover; transition: transform 0.3s;">
-          <div class="gallery-overlay position-absolute top-0 start-0 w-100 h-100 d-flex align-items-center justify-content-center" style="background: rgba(0,0,0,0.5); opacity: 0; transition: opacity 0.3s;">
-            <i class="bi bi-zoom-in text-white fs-2"></i>
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials; let i = index" [class.featured]="i === 0">
+        <div class="testimonial-header">
+          <img [src]="testimonial.image" [alt]="testimonial.name" class="testimonial-avatar">
+          <div class="testimonial-info">
+            <h4 class="testimonial-name">{{ testimonial.name }}</h4>
+            <span class="testimonial-role">{{ testimonial.role }}</span>
+          </div>
+          <div class="testimonial-rating">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+        </div>
+        <div class="testimonial-content">
+          <i class="bi bi-quote-left quote-icon"></i>
+          <p>{{ testimonial.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section Moderne -->
+<section class="gallery-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-badge">Galerie</span>
+      <h2 class="section-title">Notre clinique en images</h2>
+      <p class="section-subtitle">Découvrez nos installations de pointe</p>
+    </div>
+    
+    <div class="gallery-grid">
+      <div class="gallery-item" *ngFor="let image of gallery; let i = index" [class.large]="i === 0 || i === 3">
+        <img [src]="image" [alt]="'Image clinique ' + (i + 1)">
+        <div class="gallery-overlay">
+          <div class="overlay-content">
+            <i class="bi bi-zoom-in"></i>
+            <span>Voir plus</span>
           </div>
         </div>
       </div>
@@ -188,20 +275,41 @@
   </div>
 </section>
 
-<!-- CTA Section -->
-<section class="cta-section py-5 bg-primary text-white">
-  <div class="container text-center">
-    <h2 class="mb-3">Prêt à prendre soin de votre santé ?</h2>
-    <p class="mb-4">Rejoignez des milliers de patients qui font confiance à SmartMedical</p>
-    <div class="d-flex justify-content-center gap-3">
-      <a routerLink="/frontoffice/appointment" class="btn btn-light btn-lg">
-        <i class="bi bi-calendar-check me-2"></i>
-        Prendre RDV
-      </a>
-      <a routerLink="/frontoffice/contact" class="btn btn-outline-light btn-lg">
-        <i class="bi bi-telephone me-2"></i>
-        Nous contacter
-      </a>
+<!-- CTA Section Moderne -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="container">
+    <div class="cta-content">
+      <div class="cta-badge">
+        <i class="bi bi-lightning-charge"></i>
+        <span>Réservez maintenant</span>
+      </div>
+      <h2 class="cta-title">Prêt à prendre soin de votre santé ?</h2>
+      <p class="cta-description">Rejoignez plus de 10 000 patients qui font confiance à SmartMedical pour leur bien-être quotidien.</p>
+      <div class="cta-buttons">
+        <a routerLink="/frontoffice/appointment" class="btn btn-cta-primary">
+          <i class="bi bi-calendar-check"></i>
+          <span>Prendre rendez-vous</span>
+        </a>
+        <a routerLink="/frontoffice/contact" class="btn btn-cta-secondary">
+          <i class="bi bi-telephone"></i>
+          <span>Nous contacter</span>
+        </a>
+      </div>
+      <div class="cta-trust">
+        <div class="trust-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Paiement sécurisé</span>
+        </div>
+        <div class="trust-item">
+          <i class="bi bi-clock"></i>
+          <span>Réponse sous 24h</span>
+        </div>
+        <div class="trust-item">
+          <i class="bi bi-heart"></i>
+          <span>Satisfaction garantie</span>
+        </div>
+      </div>
     </div>
   </div>
 </section>

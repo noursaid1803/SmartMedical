@@ -1,7 +1,7 @@
 // Images médicales gratuites depuis Unsplash
 export const IMAGES = {
-  // Hero section
-  heroBg: 'https://images.unsplash.com/photo-1631217868264-e5b90bb7e133?w=1920&h=1080&fit=crop',
+  // Hero section - Image médicale moderne et professionnelle
+  heroBg: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1920&h=1080&fit=crop&q=80',
   
   // About section
   about: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&h=600&fit=crop',
