@@ -14,12 +14,12 @@ export class HomeComponent {
   images = IMAGES;
 
   services = [
-    { icon: 'bi-heart-pulse', title: 'Cardiologie', description: 'Diagnostic et traitement des maladies cardiaques' },
-    { icon: 'bi-brain', title: 'Neurologie', description: 'Soins spécialisés du système nerveux' },
-    { icon: 'bi-bone', title: 'Orthopédie', description: 'Traitement des troubles musculo-squelettiques' },
-    { icon: 'bi-eye', title: 'Ophtalmologie', description: 'Soins complets de la vision' },
+    { icon: 'bi-heart-pulse-fill', title: 'Cardiologie', description: 'Diagnostic et traitement des maladies cardiaques' },
+    { icon: 'bi-lightbulb', title: 'Neurologie', description: 'Soins spécialisés du système nerveux' },
+    { icon: 'bi-person-walking', title: 'Orthopédie', description: 'Traitement des troubles musculo-squelettiques' },
+    { icon: 'bi-eye-fill', title: 'Ophtalmologie', description: 'Soins complets de la vision' },
     { icon: 'bi-activity', title: 'Radiologie', description: 'Imagerie médicale de pointe' },
-    { icon: 'bi-droplet', title: 'Laboratoire', description: 'Analyses biologiques complètes' }
+    { icon: 'bi-droplet-fill', title: 'Laboratoire', description: 'Analyses biologiques complètes' }
   ];
 
   testimonials = [

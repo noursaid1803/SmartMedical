@@ -3,8 +3,8 @@ export const IMAGES = {
   // Hero section - Image médicale moderne et professionnelle
   heroBg: 'https://images.unsplash.com/photo-1579684385127-1ef15d508118?w=1920&h=1080&fit=crop&q=80',
   
-  // About section
-  about: 'https://images.unsplash.com/photo-1551076805-e1869033e561?w=800&h=600&fit=crop',
+  // About section - Médecin avec interface technologique/IA
+  about: 'https://images.unsplash.com/photo-1576091160399-112ba8d25d1d?w=800&h=600&fit=crop&q=80',
   
   // Doctors
   doctors: [
