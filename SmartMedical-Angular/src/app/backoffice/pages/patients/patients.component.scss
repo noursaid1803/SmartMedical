@@ -1,26 +1,306 @@
+// ============================================
+// PAGE PATIENTS - DESIGN MODERNE ET ÉLÉGANT
+// ============================================
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=Poppins:wght@500;600;700&display=swap');
+
 .patients-page {
-  .btn-primary {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-    border: none;
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  padding: 1rem;
+  max-width: 1400px;
+  margin: 0 auto;
+
+  // Header Section moderne
+  .d-flex.justify-content-between.align-items-center.mb-4 {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 2rem;
+    padding: 1.5rem 2rem;
+    background: linear-gradient(to right, #ffffff 0%, #f8fafc 100%);
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.05);
+    border-bottom: 2px solid #e2e8f0;
+
+    h2 {
+      margin: 0;
+      font-size: 2rem;
+      font-weight: 700;
+      font-family: 'Poppins', sans-serif;
+      letter-spacing: -0.02em;
+      background: linear-gradient(135deg, #1e293b 0%, #3b82f6 100%);
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+    }
+
+    .text-muted {
+      color: #64748b;
+      font-size: 1rem;
+      margin-top: 0.5rem;
+      font-weight: 400;
+    }
   }
-  
+
+  // Bouton "Nouveau patient" moderne
+  .btn-primary {
+    background: linear-gradient(135deg, #3b82f6 0%, #2563eb 50%, #1d4ed8 100%);
+    color: #fff;
+    box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    font-weight: 600;
+    font-size: 0.95rem;
+    padding: 0.75rem 1.75rem;
+    border-radius: 12px;
+    text-transform: none;
+    letter-spacing: 0.01em;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    overflow: hidden;
+    border: none;
+
+    &::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+      transition: left 0.5s ease;
+    }
+
+    &:hover {
+      background: linear-gradient(135deg, #2563eb 0%, #1d4ed8 50%, #1e40af 100%);
+      box-shadow: 0 8px 25px rgba(59, 130, 246, 0.5);
+      transform: translateY(-2px);
+
+      &::before {
+        left: 100%;
+      }
+    }
+
+    &:active {
+      transform: translateY(0);
+      box-shadow: 0 4px 15px rgba(59, 130, 246, 0.4);
+    }
+
+    i {
+      font-size: 1.1rem;
+      margin-right: 0.25rem;
+    }
+  }
+
+  // Search card moderne
+  .card.border-0.shadow-sm.mb-4 {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06) !important;
+    border: 1px solid #e2e8f0 !important;
+    overflow: hidden;
+
+    .card-body {
+      padding: 1.25rem;
+    }
+
+    .input-group {
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
+
+      .input-group-text {
+        background: #f8fafc;
+        border: 1px solid #e2e8f0;
+        border-right: none;
+        padding: 0.75rem 1rem;
+        color: #64748b;
+
+        i {
+          font-size: 1rem;
+        }
+      }
+
+      .form-control {
+        border: 1px solid #e2e8f0;
+        border-left: none;
+        padding: 0.75rem 1rem;
+        font-size: 0.95rem;
+        font-weight: 500;
+        transition: all 0.2s ease;
+
+        &:focus {
+          box-shadow: none;
+          border-color: #e2e8f0;
+          background: #f8fafc;
+        }
+
+        &::placeholder {
+          color: #94a3b8;
+        }
+      }
+    }
+  }
+
+  // Avatar stylé
   .avatar {
     font-size: 0.875rem;
+    width: 40px !important;
+    height: 40px !important;
+    background: linear-gradient(135deg, #3b82f6 0%, #60a5fa 100%) !important;
+    color: white !important;
+    border-radius: 50% !important;
+    display: flex !important;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+    font-weight: 600;
+    transition: transform 0.3s ease;
+
+    &:hover {
+      transform: scale(1.1);
+    }
   }
-  
+
+  // Table moderne
+  .card.border-0.shadow-sm {
+    background: white;
+    border-radius: 20px;
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.08) !important;
+    border: none !important;
+    overflow: hidden;
+
+    .card-body {
+      padding: 0;
+    }
+  }
+
   .table {
-    th {
-      font-weight: 600;
-      font-size: 0.875rem;
+    margin: 0;
+
+    thead.table-light {
+      background: linear-gradient(to right, #f8fafc 0%, #f1f5f9 100%);
+
+      th {
+        font-weight: 700;
+        font-size: 0.8rem;
+        text-transform: uppercase;
+        letter-spacing: 0.08em;
+        color: #475569;
+        padding: 1rem 1.25rem;
+        border-bottom: 2px solid #e2e8f0;
+        font-family: 'Poppins', sans-serif;
+
+        &:first-child {
+          border-top-left-radius: 20px;
+        }
+
+        &:last-child {
+          border-top-right-radius: 20px;
+        }
+      }
     }
-    
-    td {
-      font-size: 0.875rem;
-      vertical-align: middle;
+
+    tbody {
+      tr {
+        transition: all 0.2s ease;
+
+        &:hover {
+          background: #f8fafc;
+          transform: scale(1.005);
+          box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        td {
+          font-size: 0.9rem;
+          vertical-align: middle;
+          padding: 1rem 1.25rem;
+          color: #334155;
+          font-weight: 500;
+          border-bottom: 1px solid #f1f5f9;
+
+          &:first-child {
+            font-family: 'Poppins', monospace;
+            font-size: 0.85rem;
+            color: #64748b;
+            font-weight: 600;
+          }
+
+          // Style pour le nom du patient
+          &:nth-child(2) {
+            font-weight: 600;
+            color: #1e293b;
+          }
+        }
+
+        &:last-child td {
+          border-bottom: none;
+        }
+      }
+    }
+
+    // Loading spinner
+    .spinner-border.text-primary {
+      width: 2rem;
+      height: 2rem;
+      border-width: 0.2em;
+      color: #3b82f6 !important;
     }
   }
-  
+
+  // Boutons d'action modernisés
   .btn-sm {
-    padding: 0.25rem 0.5rem;
+    padding: 0.5rem 0.75rem;
+    border-radius: 10px;
+    font-size: 0.875rem;
+    transition: all 0.2s ease;
+    border: none;
+
+    i {
+      font-size: 1rem;
+    }
+
+    &.btn-outline-primary {
+      background: #eff6ff;
+      color: #3b82f6;
+      border: 1px solid #bfdbfe;
+
+      &:hover {
+        background: #3b82f6;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(59, 130, 246, 0.3);
+      }
+    }
+
+    &.btn-outline-secondary {
+      background: #f8fafc;
+      color: #64748b;
+      border: 1px solid #e2e8f0;
+
+      &:hover {
+        background: #e2e8f0;
+        color: #475569;
+        transform: translateY(-2px);
+      }
+    }
+
+    &.btn-outline-danger {
+      background: #fef2f2;
+      color: #ef4444;
+      border: 1px solid #fecaca;
+
+      &:hover {
+        background: #ef4444;
+        color: white;
+        transform: translateY(-2px);
+        box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+      }
+    }
+  }
+
+  // Message "Aucun patient"
+  .text-center.py-4.text-muted {
+    color: #94a3b8;
+    font-size: 1rem;
+    font-style: italic;
+    padding: 3rem !important;
   }
 }
