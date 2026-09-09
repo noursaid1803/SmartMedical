@@ -1,0 +1,115 @@
+<div class="verify-container">
+  <div class="verify-card">
+    <!-- Header -->
+    <div class="verify-header">
+      <div class="icon">🔒</div>
+      <h1>Vérification du compte</h1>
+      <p class="email">{{ doctorEmail }}</p>
+    </div>
+
+    <!-- Messages -->
+    <div *ngIf="errorMessage" class="alert alert-error">
+      {{ errorMessage }}
+    </div>
+    <div *ngIf="successMessage" class="alert alert-success">
+      {{ successMessage }}
+    </div>
+
+    <!-- Étape 1: Vérification du code -->
+    <div *ngIf="step === 'verify'" class="verify-step">
+      <h2>Entrez votre code de vérification</h2>
+      <p class="instructions">
+        Un code de vérification a été envoyé à votre email.<br>
+        Veuillez le saisir ci-dessous pour activer votre compte.
+      </p>
+
+      <form [formGroup]="verifyForm" (ngSubmit)="onVerify()">
+        <div class="form-group">
+          <label for="code">Code de vérification (6 chiffres)</label>
+          <input
+            type="text"
+            id="code"
+            formControlName="code"
+            class="form-control code-input"
+            placeholder="123456"
+            maxlength="6"
+            [class.is-invalid]="verifyForm.get('code')?.invalid && verifyForm.get('code')?.touched">
+          <div class="invalid-feedback" *ngIf="verifyForm.get('code')?.invalid && verifyForm.get('code')?.touched">
+            Le code doit contenir 6 chiffres
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <span *ngIf="loading">Vérification...</span>
+          <span *ngIf="!loading">✓ Vérifier le code</span>
+        </button>
+      </form>
+
+      <div class="resend-section">
+        <p>Vous n'avez pas reçu le code ?</p>
+        <button type="button" class="btn btn-link" (click)="resendCode()" [disabled]="loading">
+          Renvoyer le code
+        </button>
+      </div>
+    </div>
+
+    <!-- Étape 2: Changement de mot de passe -->
+    <div *ngIf="step === 'change-password'" class="password-step">
+      <h2>Changez votre mot de passe</h2>
+      <p class="instructions">
+        Pour des raisons de sécurité, veuillez changer votre mot de passe temporaire.
+      </p>
+
+      <form [formGroup]="passwordForm" (ngSubmit)="onChangePassword()">
+        <div class="form-group">
+          <label for="currentPassword">Mot de passe actuel (temporaire)</label>
+          <input
+            type="password"
+            id="currentPassword"
+            formControlName="currentPassword"
+            class="form-control"
+            placeholder="Entrez votre mot de passe temporaire"
+            [class.is-invalid]="passwordForm.get('currentPassword')?.invalid && passwordForm.get('currentPassword')?.touched">
+        </div>
+
+        <div class="form-group">
+          <label for="newPassword">Nouveau mot de passe</label>
+          <input
+            type="password"
+            id="newPassword"
+            formControlName="newPassword"
+            class="form-control"
+            placeholder="Min. 8 caractères"
+            [class.is-invalid]="passwordForm.get('newPassword')?.invalid && passwordForm.get('newPassword')?.touched">
+          <small class="form-text">Le mot de passe doit contenir au moins 8 caractères</small>
+        </div>
+
+        <div class="form-group">
+          <label for="confirmPassword">Confirmer le mot de passe</label>
+          <input
+            type="password"
+            id="confirmPassword"
+            formControlName="confirmPassword"
+            class="form-control"
+            placeholder="Répétez le nouveau mot de passe"
+            [class.is-invalid]="(passwordForm.get('confirmPassword')?.invalid || passwordForm.hasError('passwordMismatch')) && passwordForm.get('confirmPassword')?.touched">
+          <div class="invalid-feedback" *ngIf="passwordForm.hasError('passwordMismatch')">
+            Les mots de passe ne correspondent pas
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary" [disabled]="loading">
+          <span *ngIf="loading">Enregistrement...</span>
+          <span *ngIf="!loading">💾 Changer le mot de passe</span>
+        </button>
+      </form>
+    </div>
+
+    <!-- Footer -->
+    <div class="verify-footer">
+      <button type="button" class="btn btn-link" (click)="logout()">
+        ← Retour à la connexion
+      </button>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,299 @@
+<div class="pr-container">
+  <!-- Header -->
+  <header class="pr-header">
+    <div class="header-left">
+      <h1><i class="bi bi-people-fill"></i> Mes Patients</h1>
+      <p>Gérez vos patients et consultez leurs dossiers médicaux</p>
+    </div>
+    <div class="header-right">
+      <a class="btn-new-patient" routerLink="/doctor/medical-record">
+        <i class="bi bi-person-plus-fill"></i>
+        Nouveau Patient
+      </a>
+    </div>
+  </header>
+
+  <!-- Dual Panel Layout -->
+  <div class="pr-layout">
+
+    <!-- LEFT PANEL: Patient List -->
+    <div class="panel-left">
+      <div class="panel-search">
+        <i class="bi bi-search"></i>
+        <input
+          type="text"
+          [(ngModel)]="searchQuery"
+          (input)="searchPatients()"
+          placeholder="Rechercher un patient…"
+        />
+      </div>
+
+      <div class="panel-list-header">
+        <span>{{ filteredPatients.length }} patient(s)</span>
+      </div>
+
+      <div class="panel-list" *ngIf="!loading">
+        <div
+          *ngFor="let patient of filteredPatients"
+          class="patient-item"
+          [class.selected]="selectedPatient?.id === patient.id"
+          (click)="selectPatient(patient)"
+        >
+          <div class="patient-avatar-sm" [class.male]="patient.gender === 'M'" [class.female]="patient.gender === 'F'">
+            {{ getInitials(patient) }}
+          </div>
+          <div class="patient-item-info">
+            <div class="patient-item-name">{{ getFullName(patient) }}</div>
+            <div class="patient-item-meta">
+              <span *ngIf="patient.dateOfBirth">{{ getAge(patient.dateOfBirth) }} ans</span>
+              <span *ngIf="patient.bloodType" class="blood-badge">🩸 {{ patient.bloodType }}</span>
+            </div>
+            <div class="patient-item-phone" *ngIf="patient.phone">{{ patient.phone }}</div>
+          </div>
+          <div class="patient-item-status">
+            <span class="status-dot active"></span>
+          </div>
+          <div class="patient-item-actions" (click)="$event.stopPropagation()">
+            <a class="action-btn edit" [routerLink]="['/doctor/medical-record', patient.id]" title="Consulter & modifier">
+              <i class="bi bi-pencil-fill"></i>
+            </a>
+            <button class="action-btn delete" (click)="deletePatient(patient, $event)" title="Supprimer">
+              <i class="bi bi-trash-fill"></i>
+            </button>
+          </div>
+        </div>
+
+        <div *ngIf="filteredPatients.length === 0" class="empty-patients">
+          <i class="bi bi-person-x"></i>
+          <p>Aucun patient trouvé</p>
+        </div>
+      </div>
+
+      <div class="panel-loading" *ngIf="loading">
+        <div class="spinner"></div>
+        <span>Chargement…</span>
+      </div>
+    </div>
+
+    <!-- RIGHT PANEL: Patient Detail -->
+    <div class="panel-right">
+
+      <!-- No patient selected -->
+      <div class="no-selection" *ngIf="!selectedPatient">
+        <div class="no-selection-icon"><i class="bi bi-person-bounding-box"></i></div>
+        <h3>Sélectionnez un patient</h3>
+        <p>Cliquez sur un patient dans la liste pour afficher son dossier complet</p>
+      </div>
+
+      <!-- Patient Detail -->
+      <ng-container *ngIf="selectedPatient">
+
+        <!-- Patient Header Card -->
+        <div class="detail-header-card">
+          <div class="detail-avatar" [class.male]="selectedPatient.gender === 'M'" [class.female]="selectedPatient.gender === 'F'">
+            {{ getInitials(selectedPatient) }}
+          </div>
+          <div class="detail-info">
+            <h2>{{ getFullName(selectedPatient) }}</h2>
+            <div class="detail-badges">
+              <span *ngIf="selectedPatient.gender" class="badge-info">
+                {{ selectedPatient.gender === 'M' ? '👨 Masculin' : '👩 Féminin' }}
+              </span>
+              <span *ngIf="selectedPatient.dateOfBirth" class="badge-info">
+                🎂 {{ getAge(selectedPatient.dateOfBirth) }} ans
+              </span>
+              <span *ngIf="selectedPatient.bloodType" class="badge-blood">
+                🩸 {{ selectedPatient.bloodType }}
+              </span>
+            </div>
+            <div class="detail-contact">
+              <span *ngIf="selectedPatient.email"><i class="bi bi-envelope"></i> {{ selectedPatient.email }}</span>
+              <span *ngIf="selectedPatient.phone"><i class="bi bi-telephone"></i> {{ selectedPatient.phone }}</span>
+            </div>
+          </div>
+          <div class="detail-quick-actions">
+            <a class="qbtn primary" [routerLink]="['/doctor/medical-record', selectedPatient.id]">
+              <i class="bi bi-pencil-fill"></i> Modifier
+            </a>
+            <a class="qbtn secondary" [routerLink]="['/doctor/medical-record', selectedPatient.id]" [queryParams]="{ mode: 'new' }">
+              <i class="bi bi-plus-lg"></i> Nouvelle consultation
+            </a>
+          </div>
+        </div>
+
+        <!-- Medical Summary -->
+        <div class="detail-summary-row">
+          <div class="summary-card" *ngIf="selectedPatient.allergies && (selectedPatient.allergies | json) !== '[]'">
+            <div class="summary-icon allergy"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <div>
+              <div class="summary-label">Allergies</div>
+              <div class="summary-value">
+                {{ selectedPatient.allergies && (selectedPatient.allergies | json) !== '[]'
+                  ? (selectedPatient.allergies | json)
+                  : 'Aucune allergie connue' }}
+              </div>
+            </div>
+          </div>
+          <div class="summary-card" *ngIf="selectedPatient.chronicDiseases && (selectedPatient.chronicDiseases | json) !== '[]'">
+            <div class="summary-icon chronic"><i class="bi bi-heart-pulse-fill"></i></div>
+            <div>
+              <div class="summary-label">Antécédents</div>
+              <div class="summary-value">{{ selectedPatient.chronicDiseases | json }}</div>
+            </div>
+          </div>
+          <div class="summary-card" *ngIf="selectedPatient.currentMedications && (selectedPatient.currentMedications | json) !== '[]'">
+            <div class="summary-icon meds"><i class="bi bi-capsule"></i></div>
+            <div>
+              <div class="summary-label">Traitements actifs</div>
+              <div class="summary-value">{{ selectedPatient.currentMedications | json }}</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Filters for records -->
+        <div class="record-filters">
+          <div class="filter-row">
+            <div class="filter-group">
+              <i class="bi bi-search"></i>
+              <input type="text" [(ngModel)]="filterDiagnosis" (input)="applyRecordFilters()" placeholder="Filtrer par diagnostic…" />
+            </div>
+            <div class="filter-group">
+              <i class="bi bi-calendar3"></i>
+              <input type="month" [(ngModel)]="filterDate" (change)="applyRecordFilters()" />
+            </div>
+            <button class="btn-reset" (click)="resetRecordFilters()" *ngIf="filterDiagnosis || filterDate">
+              <i class="bi bi-x-circle"></i> Réinitialiser
+            </button>
+          </div>
+        </div>
+
+        <!-- Records Loading -->
+        <div class="records-loading" *ngIf="recordsLoading">
+          <div class="spinner"></div>
+          <span>Chargement du dossier médical…</span>
+        </div>
+
+        <!-- Timeline of records -->
+        <div class="records-timeline" *ngIf="!recordsLoading">
+
+          <div class="timeline-header">
+            <h3><i class="bi bi-clock-history"></i> Historique chronologique</h3>
+            <span class="timeline-count">{{ filteredRecords.length }} consultation(s)</span>
+          </div>
+
+          <div *ngIf="filteredRecords.length === 0" class="empty-records">
+            <i class="bi bi-folder2-open"></i>
+            <p>Aucune consultation enregistrée</p>
+          </div>
+
+          <div class="timeline">
+            <div class="timeline-item" *ngFor="let record of filteredRecords">
+              <div class="timeline-dot" [ngClass]="getSeverityClass(record.severity)"></div>
+              <div class="timeline-card">
+                <div class="timeline-card-header">
+                  <div class="timeline-meta">
+                    <span class="timeline-date"><i class="bi bi-calendar-event"></i> {{ record.consultationDate | date:'dd MMMM yyyy':'':'fr' }}</span>
+                    <span class="timeline-doctor"><i class="bi bi-person-badge"></i> {{ record.doctorName }}</span>
+                  </div>
+                  <div class="timeline-actions">
+                    <a class="timeline-edit-btn"
+                       [routerLink]="['/doctor/medical-record', selectedPatient.id]"
+                       [queryParams]="{ recordId: record.id }"
+                       title="Modifier cette consultation">
+                      <i class="bi bi-pencil"></i>
+                    </a>
+                    <span class="severity-badge" [ngClass]="getSeverityClass(record.severity)">
+                      {{ getSeverityLabel(record.severity) }}
+                    </span>
+                  </div>
+                </div>
+
+                <div class="timeline-card-body">
+                  <div class="record-row">
+                    <div class="record-section">
+                      <div class="section-label"><i class="bi bi-clipboard2-pulse"></i> Motif</div>
+                      <div class="section-value">{{ record.reasonForVisit }}</div>
+                    </div>
+                    <div class="record-section">
+                      <div class="section-label"><i class="bi bi-virus"></i> Symptômes</div>
+                      <div class="section-value">{{ record.symptoms }}</div>
+                    </div>
+                  </div>
+
+                  <div class="record-diagnosis">
+                    <div class="section-label"><i class="bi bi-activity"></i> Diagnostic</div>
+                    <div class="section-value diagnosis-text">{{ record.diagnosis }}</div>
+                  </div>
+
+                  <!-- Medications -->
+                  <div class="record-meds" *ngIf="record.medications && record.medications.length > 0">
+                    <div class="section-label"><i class="bi bi-capsule"></i> Traitements prescrits</div>
+                    <div class="meds-list">
+                      <div class="med-item" *ngFor="let med of record.medications">
+                        <span class="med-name">{{ med.name }}</span>
+                        <span class="med-details">{{ med.dosage }} — {{ med.frequency }} — {{ med.duration }}</span>
+                      </div>
+                    </div>
+                  </div>
+
+                  <!-- AI Result -->
+                  <div class="record-ai" *ngIf="record.aiResult">
+                    <div class="ai-badge">
+                      <i class="bi bi-cpu-fill"></i> Résultat IA
+                    </div>
+                    <div class="ai-result-text">
+                      <ng-container *ngIf="getAiResult(record) as parsed">
+                        <strong>{{ parsed.diagnosis || record.aiResult }}</strong>
+                        <span *ngIf="parsed.confidence"> — Confiance : {{ parsed.confidence }}%</span>
+                      </ng-container>
+                    </div>
+                  </div>
+
+                  <!-- Scan Image -->
+                  <div class="record-scan" *ngIf="record.imageUrl">
+                    <div class="scan-thumb">
+                      <img [src]="record.imageUrl" alt="Scan médical" />
+                      <div class="scan-overlay">
+                        <i class="bi bi-zoom-in"></i>
+                      </div>
+                    </div>
+                    <div class="scan-info">
+                      <span class="scan-label"><i class="bi bi-image"></i> Imagerie archivée</span>
+                    </div>
+                  </div>
+
+                  <!-- Notes -->
+                  <div class="record-notes" *ngIf="record.clinicalNotes">
+                    <div class="section-label"><i class="bi bi-journal-text"></i> Notes cliniques</div>
+                    <div class="section-value notes-text">{{ record.clinicalNotes }}</div>
+                  </div>
+
+                  <div class="record-reco" *ngIf="record.recommendations">
+                    <div class="section-label"><i class="bi bi-lightbulb"></i> Recommandations</div>
+                    <div class="section-value">{{ record.recommendations }}</div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Archive d'imageries -->
+          <div class="scans-archive" *ngIf="getExamRecords().length > 0">
+            <h3><i class="bi bi-images"></i> Archives d'Imagerie</h3>
+            <div class="scans-grid">
+              <div class="scan-card" *ngFor="let r of getExamRecords()">
+                <img [src]="r.imageUrl" alt="Scan" />
+                <div class="scan-card-info">
+                  <span>{{ r.consultationDate | date:'dd/MM/yyyy' }}</span>
+                  <span class="ai-chip" *ngIf="r.aiResult"><i class="bi bi-cpu"></i> IA</span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+        </div>
+      </ng-container>
+    </div>
+
+  </div>
+</div>

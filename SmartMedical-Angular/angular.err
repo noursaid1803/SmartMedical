@@ -1,0 +1,535 @@
+[1m[33mComponent HMR has been enabled, see https://angular.dev/hmr for more info.[39m[22m
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1m2 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
+
+  null
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1m2 repetitive deprecation warnings omitted.
+Run in verbose mode to see all warnings.[0m [1m[35m[plugin angular-sass][0m
+
+  null
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:69:18:
+[37m      69 │       background: [32m[37mdarken($light, 5%);
+         ╵                   [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:69:18:
+[37m      69 │       background: [32m[37mdarken($light, 5%);
+         ╵                   [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.1%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:741:15:
+[37m      741 │         color: [32m[37mlighten($secondary, 15%);
+          ╵                [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:741:15:
+[37m      741 │         color: [32m[37mlighten($secondary, 15%);
+          ╵                [32m^[0m
+
+
+  lighten() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: 28.2287822878%)
+  color.adjust($color, $lightness: 15%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:905:20:
+[37m      905 │       border-color: [32m[37mdarken($light, 10%);
+          ╵                     [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:905:20:
+[37m      905 │       border-color: [32m[37mdarken($light, 10%);
+          ╵                     [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -10.2%)
+  color.adjust($color, $lightness: -10%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:914:18:
+[37m      914 │       background: [32m[37mdarken($light, 5%);
+          ╵                   [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:914:18:
+[37m      914 │       background: [32m[37mdarken($light, 5%);
+          ╵                   [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.1%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:937:18:
+[37m      937 │       background: [32m[37mdarken($danger, 10%);
+          ╵                   [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/core/components/profile/profile.component.scss:937:18:
+[37m      937 │       background: [32m[37mdarken($danger, 10%);
+          ╵                   [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -16.6123778502%)
+  color.adjust($color, $lightness: -10%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:50:16:
+[37m      50 │     background: [32m[37mdarken($light, 5%);
+         ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:50:16:
+[37m      50 │     background: [32m[37mdarken($light, 5%);
+         ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.2040816327%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:105:13:
+[37m      105 │       color: [32m[37mlighten($secondary, 20%);
+          ╵              [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:105:13:
+[37m      105 │       color: [32m[37mlighten($secondary, 20%);
+          ╵              [32m^[0m
+
+
+  lighten() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: 37.6383763838%)
+  color.adjust($color, $lightness: 20%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:148:16:
+[37m      148 │     background: [32m[37mdarken($light, 5%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:148:16:
+[37m      148 │     background: [32m[37mdarken($light, 5%);
+          ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.2040816327%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:207:16:
+[37m      207 │     background: [32m[37mlighten($light, 2%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:207:16:
+[37m      207 │     background: [32m[37mlighten($light, 2%);
+          ╵                 [32m^[0m
+
+
+  lighten() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: 51%)
+  color.adjust($color, $lightness: 2%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:288:18:
+[37m      288 │       background: [32m[37mdarken($light, 5%);
+          ╵                   [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/components/doctor-header/doctor-header.component.scss:288:18:
+[37m      288 │       background: [32m[37mdarken($light, 5%);
+          ╵                   [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.2040816327%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:247:16:
+[37m      247 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:247:16:
+[37m      247 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -2.0816326531%)
+  color.adjust($color, $lightness: -2%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:331:16:
+[37m      331 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:331:16:
+[37m      331 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -2.0816326531%)
+  color.adjust($color, $lightness: -2%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:448:16:
+[37m      448 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/doctor-dashboard/doctor-dashboard.component.scss:448:16:
+[37m      448 │     background: [32m[37mdarken($light, 2%);
+          ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -2.0816326531%)
+  color.adjust($color, $lightness: -2%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:113:15:
+[37m      113 │         color: [32m[37mlighten($secondary, 20%);
+          ╵                [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:113:15:
+[37m      113 │         color: [32m[37mlighten($secondary, 20%);
+          ╵                [32m^[0m
+
+
+  lighten() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: 37.6383763838%)
+  color.adjust($color, $lightness: 20%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:209:16:
+[37m      209 │     background: [32m[37mdarken($light, 3%);
+          ╵                 [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:209:16:
+[37m      209 │     background: [32m[37mdarken($light, 3%);
+          ╵                 [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -3.1224489796%)
+  color.adjust($color, $lightness: -3%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:288:13:
+[37m      288 │       color: [32m[37mlighten($secondary, 10%);
+          ╵              [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:288:13:
+[37m      288 │       color: [32m[37mlighten($secondary, 10%);
+          ╵              [32m^[0m
+
+
+  lighten() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: 18.8191881919%)
+  color.adjust($color, $lightness: 10%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:451:26:
+[37m      451 │     border-top: 1px solid [32m[37mdarken($light, 5%);
+          ╵                           [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:451:26:
+[37m      451 │     border-top: 1px solid [32m[37mdarken($light, 5%);
+          ╵                           [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -5.2040816327%)
+  color.adjust($color, $lightness: -5%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:511:18:
+[37m      511 │       background: [32m[37mdarken($light, 3%);
+          ╵                   [32m^[0m
+
+
+  Global built-in functions are deprecated and will be removed in Dart Sass 3.0.0.
+  Use color.adjust instead.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/app/doctor/pages/patient-records/patient-records.component.scss:511:18:
+[37m      511 │       background: [32m[37mdarken($light, 3%);
+          ╵                   [32m^[0m
+
+
+  darken() is deprecated. Suggestions:
+  
+  color.scale($color, $lightness: -3.1224489796%)
+  color.adjust($color, $lightness: -3%)
+  
+  More info: [4mhttps://sass-lang.com/d/color-functions[0m
+
+
+[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mDeprecation[0m [1m[35m[plugin angular-sass][0m
+
+    src/styles.scss:4:8:
+[37m      4 │ @import [32m[37m'bootstrap/scss/bootstrap';
+        ╵         [32m^[0m
+
+
+  Sass @import rules are deprecated and will be removed in Dart Sass 3.0.0.
+  
+  More info and automated migrator: [4mhttps://sass-lang.com/d/import[0m
+
+  The plugin "angular-sass" was triggered by this import
+
+    angular:styles/global:styles:3:8:
+[37m      3 │ @import [32m'src/styles.scss'[37m;
+        ╵         [32m~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m

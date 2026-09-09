@@ -1,0 +1,201 @@
+<div class="doctor-dashboard">
+  <!-- Welcome Section -->
+  <section class="welcome-section">
+    <div class="welcome-content">
+      <div class="welcome-text">
+        <h1>Bonjour, Dr. {{ doctorName }} 👋</h1>
+        <p>Voici un aperçu de votre activité médicale aujourd'hui</p>
+      </div>
+      <div class="quick-stats">
+        <div class="quick-stat">
+          <i class="bi bi-sun"></i>
+          <span>{{ today | date:'HH:mm' }}</span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Stats Cards -->
+  <section class="stats-section">
+    <div class="stats-grid">
+      <div class="stat-card patients">
+        <div class="stat-icon">
+          <i class="bi bi-people"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.totalPatients }}</h3>
+          <p>Patients</p>
+          <span class="stat-trend">
+            <i class="bi bi-arrow-up"></i> +12%
+          </span>
+        </div>
+      </div>
+
+      <div class="stat-card appointments">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.todayAppointments }}</h3>
+          <p>Rendez-vous aujourd'hui</p>
+          <span class="stat-status active">3 confirmés</span>
+        </div>
+      </div>
+
+      <div class="stat-card records">
+        <div class="stat-icon">
+          <i class="bi bi-file-medical"></i>
+        </div>
+        <div class="stat-content">
+          <h3>{{ stats.pendingRecords }}</h3>
+          <p>Dossiers en attente</p>
+          <span class="stat-status warning">À compléter</span>
+        </div>
+      </div>
+
+      <div class="stat-card consultations">
+        <div class="stat-icon">
+          <i class="bi bi-heart-pulse"></i>
+        </div>
+        <div class="stat-content">
+          <h3>24</h3>
+          <p>Consultations ce mois</p>
+          <span class="stat-trend">
+            <i class="bi bi-arrow-up"></i> +8%
+          </span>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Main Grid -->
+  <div class="dashboard-grid">
+    <!-- Quick Actions -->
+    <section class="actions-section">
+      <div class="section-header">
+        <h2><i class="bi bi-lightning-charge"></i> Actions rapides</h2>
+      </div>
+      <div class="actions-grid">
+        <div class="action-card" routerLink="/doctor/patients">
+          <div class="action-icon blue">
+            <i class="bi bi-people"></i>
+          </div>
+          <div class="action-content">
+            <h4>Mes Patients</h4>
+            <p>Voir la liste des patients</p>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+
+        <div class="action-card" routerLink="/doctor/medical-record">
+          <div class="action-icon green">
+            <i class="bi bi-file-earmark-plus"></i>
+          </div>
+          <div class="action-content">
+            <h4>Nouveau Dossier</h4>
+            <p>Créer un dossier médical</p>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+
+        <div class="action-card" routerLink="/doctor/appointments">
+          <div class="action-icon orange">
+            <i class="bi bi-calendar-plus"></i>
+          </div>
+          <div class="action-content">
+            <h4>Rendez-vous</h4>
+            <p>Gérer les rendez-vous</p>
+          </div>
+          <i class="bi bi-arrow-right"></i>
+        </div>
+      </div>
+    </section>
+
+    <!-- Today's Appointments -->
+    <section class="appointments-section">
+      <div class="section-header">
+        <h2><i class="bi bi-calendar-event"></i> Rendez-vous d'aujourd'hui</h2>
+        <a routerLink="/doctor/appointments" class="btn-view-all">Voir tout</a>
+      </div>
+      <div class="appointments-list">
+        <div class="appointment-item">
+          <div class="appointment-time">
+            <span class="time">09:00</span>
+            <span class="duration">30 min</span>
+          </div>
+          <div class="appointment-patient">
+            <div class="patient-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <div class="patient-info">
+              <h5>Mohamed Ali</h5>
+              <p>Consultation générale</p>
+            </div>
+          </div>
+          <span class="appointment-status confirmed">Confirmé</span>
+        </div>
+
+        <div class="appointment-item">
+          <div class="appointment-time">
+            <span class="time">10:30</span>
+            <span class="duration">45 min</span>
+          </div>
+          <div class="appointment-patient">
+            <div class="patient-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <div class="patient-info">
+              <h5>Fatima Hassan</h5>
+              <p>Suivi grossesse</p>
+            </div>
+          </div>
+          <span class="appointment-status confirmed">Confirmé</span>
+        </div>
+
+        <div class="appointment-item">
+          <div class="appointment-time">
+            <span class="time">14:00</span>
+            <span class="duration">30 min</span>
+          </div>
+          <div class="appointment-patient">
+            <div class="patient-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <div class="patient-info">
+              <h5>Ahmed Khalil</h5>
+              <p>Renouvellement ordonnance</p>
+            </div>
+          </div>
+          <span class="appointment-status pending">En attente</span>
+        </div>
+      </div>
+    </section>
+  </div>
+
+  <!-- Recent Patients -->
+  <section class="recent-section">
+    <div class="section-header">
+      <h2><i class="bi bi-clock-history"></i> Patients récents</h2>
+      <a routerLink="/doctor/patients" class="btn-view-all">Voir tout</a>
+    </div>
+    <div class="recent-patients">
+      <div class="patient-card-mini" *ngFor="let patient of recentPatients" routerLink="/doctor/patients">
+        <div class="mini-avatar">
+          <i class="bi bi-person"></i>
+        </div>
+        <div class="mini-info">
+          <h5>{{ getPatientDisplayName(patient) }}</h5>
+          <p *ngIf="patient.createdAt">Inscrit le {{ patient.createdAt | date:'dd/MM/yyyy' }}</p>
+          <p *ngIf="!patient.createdAt">Patient</p>
+        </div>
+        <i class="bi bi-chevron-right"></i>
+      </div>
+      
+      <!-- Message si aucun patient -->
+      <div class="no-patients" *ngIf="recentPatients.length === 0">
+        <i class="bi bi-people"></i>
+        <p>Aucun patient enregistré</p>
+      </div>
+    </div>
+  </section>
+</div>

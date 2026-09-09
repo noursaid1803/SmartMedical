@@ -1,0 +1,52 @@
+<div class="appointments-page page-transition">
+  <div class="page-header-medical mb-4">
+    <div>
+      <h2 class="page-title">Gestion des rendez-vous</h2>
+      <p class="page-subtitle">{{ appointments.length }} rendez-vous enregistrés</p>
+    </div>
+  </div>
+
+  <div class="medical-card">
+    <div class="table-responsive">
+      <table class="medical-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Médecin</th>
+            <th>Spécialité</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Motif</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading"><td colspan="8" class="text-center py-4">Chargement…</td></tr>
+          <tr *ngFor="let apt of appointments">
+            <td>{{ apt.patientName }}</td>
+            <td>{{ apt.doctorName }}</td>
+            <td>{{ apt.doctorSpecialty }}</td>
+            <td>{{ apt.appointmentDate }}</td>
+            <td>{{ apt.appointmentTime }}</td>
+            <td class="text-truncate-2" style="max-width:180px">{{ apt.reason }}</td>
+            <td><span class="badge-medical" [ngClass]="getStatusClass(apt.status)">{{ getStatusLabel(apt.status) }}</span></td>
+            <td>
+              <div class="table-actions">
+                <button class="btn-icon btn-edit" title="Confirmer" (click)="updateStatus(apt.id, 'CONFIRMED')">
+                  <i class="bi bi-check-lg"></i>
+                </button>
+                <button class="btn-icon btn-delete" title="Annuler" (click)="updateStatus(apt.id, 'CANCELLED')">
+                  <i class="bi bi-x-lg"></i>
+                </button>
+              </div>
+            </td>
+          </tr>
+          <tr *ngIf="!loading && appointments.length === 0">
+            <td colspan="8" class="text-center text-muted py-4">Aucun rendez-vous</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</div>

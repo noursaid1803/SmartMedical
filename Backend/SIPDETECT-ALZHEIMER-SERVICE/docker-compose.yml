@@ -1,0 +1,19 @@
+services:
+  sipdetect-alzheimer:
+    build:
+      context: ../..
+      dockerfile: Backend/SIPDETECT-ALZHEIMER-SERVICE/Dockerfile
+    container_name: sipdetect-alzheimer
+    restart: unless-stopped
+    ports:
+      - "8087:8087"
+    environment:
+      - PYTHONUNBUFFERED=1
+      - SIPDETECT_MODEL_PATH=/app/models/model.pth
+      - SIPDETECT_MODEL_DIR=/app/models
+    healthcheck:
+      test: ["CMD-SHELL", "python -c \"import urllib.request; urllib.request.urlopen('http://localhost:8087/health')\" || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 90s

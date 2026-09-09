@@ -1,0 +1,127 @@
+<nav class="navbar-main" [class.scrolled]="isScrolled">
+  <div class="container navbar-container">
+    <!-- Logo -->
+    <a class="navbar-brand" routerLink="/frontoffice">
+      <div class="brand-icon">
+        <i class="bi bi-heart-pulse-fill"></i>
+      </div>
+      <span class="brand-text">SmartMedical</span>
+    </a>
+    
+    <!-- Toggle Mobile -->
+    <button 
+      class="navbar-toggle" 
+      type="button" 
+      (click)="toggleMenu()"
+      [class.active]="isMenuOpen"
+    >
+      <span class="toggle-bar"></span>
+      <span class="toggle-bar"></span>
+      <span class="toggle-bar"></span>
+    </button>
+    
+    <!-- Navigation -->
+    <div class="navbar-menu" [class.open]="isMenuOpen">
+      <ul class="navbar-nav">
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/frontoffice" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+            <span class="link-text">Accueil</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/frontoffice/services" routerLinkActive="active">
+            <span class="link-text">Services</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/frontoffice/doctors" routerLinkActive="active">
+            <span class="link-text">Médecins</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/frontoffice/about" routerLinkActive="active">
+            <span class="link-text">À propos</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-link" routerLink="/frontoffice/contact" routerLinkActive="active">
+            <span class="link-text">Contact</span>
+            <span class="link-indicator"></span>
+          </a>
+        </li>
+      </ul>
+      
+      <!-- Actions -->
+      <div class="navbar-actions">
+        <ng-container *ngIf="authService.currentUser$ | async as user; else notLoggedIn">
+          <div class="user-menu">
+            <button class="btn-user" type="button" (click)="toggleUserMenu()" #userMenuBtn>
+              <div class="user-avatar">
+                <span>{{ user.firstName?.[0] || 'U' }}</span>
+              </div>
+              <span class="user-name">{{ user.firstName }}</span>
+              <i class="bi bi-chevron-down"></i>
+            </button>
+            
+            <div class="dropdown-menu" [class.show]="isUserMenuOpen" #userMenu>
+              <div class="dropdown-header">
+                <span class="dropdown-title">Mon compte</span>
+              </div>
+              
+              <div class="dropdown-body">
+                <a class="dropdown-item" *ngIf="authService.isDoctor()" routerLink="/doctor">
+                  <i class="bi bi-heart-pulse"></i>
+                  <span>Interface médecin</span>
+                </a>
+                <a class="dropdown-item" *ngIf="authService.isAdmin()" routerLink="/admin">
+                  <i class="bi bi-shield-lock"></i>
+                  <span>Interface admin</span>
+                </a>
+                <a class="dropdown-item" *ngIf="!authService.isDoctor() && !authService.isAdmin()" routerLink="/frontoffice/dashboard">
+                  <i class="bi bi-heart-pulse"></i>
+                  <span>Mon espace santé</span>
+                </a>
+                
+                <div class="dropdown-divider"></div>
+                
+                <a class="dropdown-item" routerLink="/profile">
+                  <i class="bi bi-person"></i>
+                  <span>Mon profil</span>
+                </a>
+                <a class="dropdown-item" routerLink="/frontoffice/appointments">
+                  <i class="bi bi-calendar-check"></i>
+                  <span>Mes rendez-vous</span>
+                </a>
+              </div>
+              
+              <div class="dropdown-footer">
+                <a class="dropdown-item logout" href="#" (click)="logout(); $event.preventDefault()">
+                  <i class="bi bi-box-arrow-right"></i>
+                  <span>Déconnexion</span>
+                </a>
+              </div>
+            </div>
+          </div>
+        </ng-container>
+        
+        <ng-template #notLoggedIn>
+          <a class="btn btn-login" routerLink="/login">
+            <i class="bi bi-person"></i>
+            <span>Connexion</span>
+          </a>
+          <a class="btn btn-appointment" routerLink="/frontoffice/appointment">
+            <i class="bi bi-calendar-plus"></i>
+            <span>Prendre RDV</span>
+          </a>
+        </ng-template>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<!-- Overlay for mobile -->
+<div class="navbar-overlay" [class.show]="isMenuOpen" (click)="toggleMenu()"></div>

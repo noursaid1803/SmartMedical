@@ -1,0 +1,491 @@
+<div class="pd-wrapper">
+
+  <!-- Loading Overlay -->
+  <div class="pd-loading" *ngIf="patientLoading">
+    <div class="loading-spinner"></div>
+    <p>Chargement de votre espace santé…</p>
+  </div>
+
+  <ng-container *ngIf="!patientLoading">
+
+    <!-- ===== WELCOME HEADER ===== -->
+    <div class="pd-hero">
+      <div class="hero-left">
+        <div class="hero-avatar">{{ getPatientInitials() }}</div>
+        <div class="hero-info">
+          <p class="hero-greeting">Bienvenue sur votre espace santé</p>
+          <h1 class="hero-name">{{ (patient?.firstName || currentUser?.firstName) }} {{ (patient?.lastName || currentUser?.lastName) }}</h1>
+          <div class="hero-tags">
+            <span *ngIf="patient?.bloodType && patient?.bloodType !== 'UNKNOWN'" class="tag tag-blood">
+              🩸 {{ patient?.bloodType }}
+            </span>
+            <span *ngIf="patient?.email" class="tag tag-email">
+              <i class="bi bi-envelope"></i> {{ patient?.email || currentUser?.email }}
+            </span>
+          </div>
+        </div>
+      </div>
+      <div class="hero-metrics">
+        <div class="metric-card">
+          <div class="metric-icon cons"><i class="bi bi-clipboard2-pulse"></i></div>
+          <div class="metric-val">{{ healthMetrics.totalConsultations }}</div>
+          <div class="metric-label">Consultations</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon exam"><i class="bi bi-image"></i></div>
+          <div class="metric-val">{{ healthMetrics.activeExams }}</div>
+          <div class="metric-label">Examens IA</div>
+        </div>
+        <div class="metric-card">
+          <div class="metric-icon pres"><i class="bi bi-capsule"></i></div>
+          <div class="metric-val">{{ healthMetrics.activePrescriptions }}</div>
+          <div class="metric-label">Prescriptions</div>
+        </div>
+        <div class="metric-card" *ngIf="healthMetrics.lastVisit">
+          <div class="metric-icon date"><i class="bi bi-calendar-check"></i></div>
+          <div class="metric-val small-val">{{ healthMetrics.lastVisit | date:'dd/MM/yy' }}</div>
+          <div class="metric-label">Dernière visite</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ===== TAB NAVIGATION ===== -->
+    <div class="pd-tabs">
+      <button [class.active]="activeTab === 'overview'" (click)="setTab('overview')">
+        <i class="bi bi-house-heart"></i> <span>Aperçu</span>
+      </button>
+      <button [class.active]="activeTab === 'history'" (click)="setTab('history')">
+        <i class="bi bi-clock-history"></i> <span>Historique</span>
+      </button>
+      <button [class.active]="activeTab === 'exams'" (click)="setTab('exams')">
+        <i class="bi bi-image-alt"></i> <span>Examens & Scans</span>
+      </button>
+      <button [class.active]="activeTab === 'prescriptions'" (click)="setTab('prescriptions')">
+        <i class="bi bi-capsule"></i> <span>Prescriptions</span>
+      </button>
+      <button [class.active]="activeTab === 'appointments'" (click)="setTab('appointments')">
+        <i class="bi bi-calendar-plus"></i> <span>Rendez-vous</span>
+      </button>
+      <button [class.active]="activeTab === 'share'" (click)="setTab('share')">
+        <i class="bi bi-share"></i> <span>Partage</span>
+      </button>
+      <button [class.active]="activeTab === 'chatbot'" (click)="setTab('chatbot')" class="tab-chatbot">
+        <i class="bi bi-robot"></i> <span>Assistant IA</span>
+      </button>
+    </div>
+
+    <!-- ===== TAB CONTENT ===== -->
+    <div class="pd-content">
+
+      <!-- ---- OVERVIEW ---- -->
+      <div *ngIf="activeTab === 'overview'" class="tab-pane overview-pane">
+
+        <!-- Profile card -->
+        <div class="info-card">
+          <div class="card-title"><i class="bi bi-person-circle"></i> Informations Personnelles</div>
+          <div class="info-grid">
+            <div class="info-item" *ngIf="patient?.dateOfBirth || patient?.age">
+              <span class="info-label">Âge</span>
+              <span class="info-val">{{ patient?.age || 'N/A' }} ans</span>
+            </div>
+            <div class="info-item" *ngIf="patient?.gender">
+              <span class="info-label">Genre</span>
+              <span class="info-val">{{ patient?.gender === 'M' ? 'Masculin' : patient?.gender === 'F' ? 'Féminin' : 'Autre' }}</span>
+            </div>
+            <div class="info-item" *ngIf="patient?.phone">
+              <span class="info-label">Téléphone</span>
+              <span class="info-val">{{ patient?.phone }}</span>
+            </div>
+            <div class="info-item" *ngIf="patient?.address">
+              <span class="info-label">Adresse</span>
+              <span class="info-val">{{ patient?.address }}</span>
+            </div>
+            <div class="info-item">
+              <span class="info-label">Groupe Sanguin</span>
+              <span class="info-val blood">{{ patient?.bloodType || 'Non renseigné' }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Medical summary -->
+        <div class="medical-summary-grid">
+          <div class="sum-card allergy-card">
+            <div class="sum-icon"><i class="bi bi-exclamation-triangle-fill"></i></div>
+            <div class="sum-body">
+              <div class="sum-label">Allergies</div>
+              <div class="sum-val">
+                {{ (patient?.allergies && (patient?.allergies | json) !== '[]' && (patient?.allergies | json) !== '""')
+                  ? (patient?.allergies | json)
+                  : 'Aucune allergie connue' }}
+              </div>
+            </div>
+          </div>
+          <div class="sum-card chronic-card">
+            <div class="sum-icon"><i class="bi bi-heart-pulse-fill"></i></div>
+            <div class="sum-body">
+              <div class="sum-label">Antécédents chroniques</div>
+              <div class="sum-val">
+                {{ (patient?.chronicDiseases && (patient?.chronicDiseases | json) !== '[]')
+                  ? (patient?.chronicDiseases | json)
+                  : 'Aucun antécédent renseigné' }}
+              </div>
+            </div>
+          </div>
+          <div class="sum-card meds-card">
+            <div class="sum-icon"><i class="bi bi-capsule"></i></div>
+            <div class="sum-body">
+              <div class="sum-label">Traitements en cours</div>
+              <div class="sum-val">
+                {{ (patient?.currentMedications && (patient?.currentMedications | json) !== '[]')
+                  ? (patient?.currentMedications | json)
+                  : 'Aucun traitement actif' }}
+              </div>
+            </div>
+          </div>
+          <div class="sum-card contact-card">
+            <div class="sum-icon"><i class="bi bi-telephone-fill"></i></div>
+            <div class="sum-body">
+              <div class="sum-label">Contact d'urgence</div>
+              <div class="sum-val">
+                {{ patient?.emergencyContact?.name || 'Non spécifié' }}
+                <span *ngIf="patient?.emergencyContact?.phone"> — {{ patient?.emergencyContact?.phone }}</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Recent activity -->
+        <div class="recent-card">
+          <div class="card-title"><i class="bi bi-activity"></i> Dernières Consultations</div>
+          <div *ngIf="medicalRecords.length === 0" class="empty-state">
+            <i class="bi bi-folder2-open"></i>
+            <p>Aucune consultation enregistrée pour le moment</p>
+          </div>
+          <div class="recent-list">
+            <div class="recent-item" *ngFor="let rec of medicalRecords.slice(0, 3)">
+              <div class="recent-date">
+                <span class="rec-day">{{ rec.consultationDate | date:'dd' }}</span>
+                <span class="rec-month">{{ rec.consultationDate | date:'MMM' }}</span>
+              </div>
+              <div class="recent-body">
+                <div class="recent-diag">{{ rec.diagnosis }}</div>
+                <div class="recent-meta">{{ rec.doctorName }} — {{ rec.reasonForVisit }}</div>
+                <span class="recent-sev" [class]="getSeverityClass(rec.severity)">{{ getSeverityLabel(rec.severity) }}</span>
+              </div>
+              <button class="btn-dl" (click)="downloadReport(rec)" title="Télécharger le rapport">
+                <i class="bi bi-download"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- HISTORY ---- -->
+      <div *ngIf="activeTab === 'history'" class="tab-pane history-pane">
+        <div class="pane-header">
+          <h2><i class="bi bi-clock-history"></i> Historique Médical</h2>
+          <div class="pane-filters">
+            <input type="text" [(ngModel)]="filterDiagnosis" (input)="applyFilters()" placeholder="Filtrer par diagnostic…" class="filter-input" />
+            <input type="month" [(ngModel)]="filterDate" (change)="applyFilters()" class="filter-input" />
+            <button class="btn-reset-filter" (click)="resetFilters()" *ngIf="filterDiagnosis || filterDate">
+              <i class="bi bi-x-circle"></i>
+            </button>
+          </div>
+        </div>
+
+        <div class="history-count">{{ filteredRecords.length }} consultation(s) trouvée(s)</div>
+
+        <div *ngIf="loading" class="loading-inline"><div class="loading-spinner-sm"></div> Chargement…</div>
+
+        <div class="history-timeline">
+          <div class="ht-item" *ngFor="let rec of filteredRecords">
+            <div class="ht-line"></div>
+            <div class="ht-dot" [ngClass]="getSeverityClass(rec.severity)"></div>
+            <div class="ht-card">
+              <div class="ht-card-top">
+                <div class="ht-date-block">
+                  <i class="bi bi-calendar-event"></i>
+                  {{ rec.consultationDate | date:'dd MMMM yyyy' }}
+                </div>
+                <span class="ht-sev" [ngClass]="getSeverityClass(rec.severity)">{{ getSeverityLabel(rec.severity) }}</span>
+              </div>
+              <div class="ht-doctor"><i class="bi bi-person-badge"></i> {{ rec.doctorName }}</div>
+              <div class="ht-diag">{{ rec.diagnosis }}</div>
+              <div class="ht-reason">Motif : {{ rec.reasonForVisit }}</div>
+              <div class="ht-symptoms" *ngIf="rec.symptoms">Symptômes : {{ rec.symptoms }}</div>
+
+              <div class="ht-meds" *ngIf="rec.medications && rec.medications.length > 0">
+                <div class="ht-meds-label"><i class="bi bi-capsule"></i> Prescriptions :</div>
+                <div class="ht-med-item" *ngFor="let m of rec.medications">
+                  {{ m.name }} {{ m.dosage }} — {{ m.frequency }}
+                </div>
+              </div>
+
+              <div class="ht-reco" *ngIf="rec.recommendations">
+                <i class="bi bi-lightbulb"></i> {{ rec.recommendations }}
+              </div>
+
+              <div class="ht-ai" *ngIf="rec.aiResult">
+                <div class="ai-badge-sm"><i class="bi bi-cpu-fill"></i> Analyse IA</div>
+                <span>{{ getAiResultParsed(rec)?.diagnosis || rec.aiResult }}</span>
+              </div>
+
+              <div class="ht-actions">
+                <button class="btn-dl-sm" (click)="downloadReport(rec)">
+                  <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+                </button>
+              </div>
+            </div>
+          </div>
+
+          <div *ngIf="filteredRecords.length === 0 && !loading" class="empty-state">
+            <i class="bi bi-search"></i>
+            <p>Aucune consultation ne correspond à vos filtres</p>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- EXAMS & SCANS ---- -->
+      <div *ngIf="activeTab === 'exams'" class="tab-pane exams-pane">
+        <div class="pane-header">
+          <h2><i class="bi bi-image-alt"></i> Examens & Imageries</h2>
+        </div>
+
+        <div *ngIf="getExamRecords().length === 0" class="empty-state">
+          <i class="bi bi-images"></i>
+          <p>Aucun scan ou imagerie archivé pour le moment</p>
+          <small>Vos examens d'imagerie médicale (IRM, Scanner…) apparaîtront ici après analyse.</small>
+        </div>
+
+        <div class="scans-grid-main" *ngIf="getExamRecords().length > 0">
+          <div class="scan-card-main" *ngFor="let rec of getExamRecords()" (click)="openScanModal(rec)">
+            <div class="scan-img-wrapper">
+              <img [src]="rec.imageUrl" alt="Scan médical" />
+              <div class="scan-overlay-main">
+                <i class="bi bi-zoom-in"></i>
+                <span>Voir en détail</span>
+              </div>
+            </div>
+            <div class="scan-card-body">
+              <div class="scan-date">{{ rec.consultationDate | date:'dd/MM/yyyy' }}</div>
+              <div class="scan-diag">{{ rec.diagnosis }}</div>
+              <div class="scan-doctor">{{ rec.doctorName }}</div>
+              <div class="scan-ai-result" *ngIf="rec.aiResult">
+                <div class="ai-badge-sm"><i class="bi bi-cpu-fill"></i> Analyse IA</div>
+                <span>{{ getAiResultParsed(rec)?.diagnosis || rec.aiResult }}</span>
+                <span class="ai-conf" *ngIf="getAiResultParsed(rec)?.confidence">
+                  — {{ getAiResultParsed(rec)?.confidence }}% de confiance
+                </span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Scan Modal -->
+        <div class="scan-modal-overlay" *ngIf="showScanModal" (click)="closeScanModal()">
+          <div class="scan-modal" (click)="$event.stopPropagation()">
+            <button class="modal-close" (click)="closeScanModal()"><i class="bi bi-x-lg"></i></button>
+            <h3>Imagerie Médicale</h3>
+            <img [src]="selectedScan?.imageUrl" alt="Scan" class="modal-img" />
+            <div class="modal-meta">
+              <span>{{ selectedScan?.consultationDate | date:'dd/MM/yyyy' }}</span>
+              <span>{{ selectedScan?.doctorName }}</span>
+              <span class="modal-diag">{{ selectedScan?.diagnosis }}</span>
+            </div>
+            <div class="modal-ai" *ngIf="selectedScan?.aiResult">
+              <div class="ai-badge-sm"><i class="bi bi-cpu-fill"></i> Résultat de l'analyse IA</div>
+              <p>{{ getAiResultParsed(selectedScan!)?.diagnosis || selectedScan?.aiResult }}</p>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- PRESCRIPTIONS ---- -->
+      <div *ngIf="activeTab === 'prescriptions'" class="tab-pane prescriptions-pane">
+        <div class="pane-header">
+          <h2><i class="bi bi-capsule"></i> Prescriptions & Traitements</h2>
+        </div>
+
+        <div *ngIf="getPrescriptionRecords().length === 0" class="empty-state">
+          <i class="bi bi-capsule"></i>
+          <p>Aucune prescription enregistrée</p>
+        </div>
+
+        <div class="prescriptions-list">
+          <div class="presc-card" *ngFor="let rec of getPrescriptionRecords()">
+            <div class="presc-header">
+              <div class="presc-date"><i class="bi bi-calendar"></i> {{ rec.consultationDate | date:'dd/MM/yyyy' }}</div>
+              <div class="presc-doctor">{{ rec.doctorName }}</div>
+              <button class="btn-dl-sm" (click)="downloadReport(rec)">
+                <i class="bi bi-file-earmark-arrow-down"></i> Télécharger
+              </button>
+            </div>
+            <div class="presc-diag">Diagnostic : <strong>{{ rec.diagnosis }}</strong></div>
+            <div class="presc-meds">
+              <div class="presc-med-item" *ngFor="let med of rec.medications">
+                <div class="med-icon"><i class="bi bi-capsule-pill"></i></div>
+                <div class="med-body">
+                  <div class="med-name">{{ med.name }}</div>
+                  <div class="med-info">{{ med.dosage }} — {{ med.frequency }} — {{ med.duration }}</div>
+                  <div class="med-note" *ngIf="med.instructions">{{ med.instructions }}</div>
+                </div>
+              </div>
+            </div>
+            <div class="presc-reco" *ngIf="rec.recommendations">
+              <i class="bi bi-lightbulb"></i> {{ rec.recommendations }}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- APPOINTMENTS ---- -->
+      <div *ngIf="activeTab === 'appointments'" class="tab-pane appointments-pane">
+        <div class="pane-header">
+          <h2><i class="bi bi-calendar-plus"></i> Mes rendez-vous</h2>
+          <a routerLink="/frontoffice/appointment" class="btn-apt-new">Nouveau rendez-vous</a>
+        </div>
+        <div *ngIf="appointmentsLoading" class="empty-state"><p>Chargement…</p></div>
+        <div *ngIf="!appointmentsLoading && appointments.length === 0" class="empty-state">
+          <div class="empty-icon"><i class="bi bi-calendar-x"></i></div>
+          <h3>Aucun rendez-vous</h3>
+          <p>Prenez votre premier rendez-vous en ligne avec un médecin.</p>
+          <a routerLink="/frontoffice/appointment" class="btn-apt-new">Prendre rendez-vous</a>
+        </div>
+        <div class="apt-list" *ngIf="appointments.length > 0">
+          <div class="apt-card" *ngFor="let apt of appointments">
+            <div class="apt-date">
+              <span class="apt-day">{{ apt.appointmentDate | date:'dd' }}</span>
+              <span class="apt-month">{{ apt.appointmentDate | date:'MMM yyyy' }}</span>
+            </div>
+            <div class="apt-body">
+              <h4>Dr. {{ apt.doctorName }} <small *ngIf="apt.doctorSpecialty">— {{ apt.doctorSpecialty }}</small></h4>
+              <p><i class="bi bi-clock"></i> {{ apt.appointmentTime }} · {{ apt.reason }}</p>
+              <span class="apt-status" [class.confirmed]="apt.status === 'CONFIRMED'" [class.pending]="apt.status === 'PENDING'">
+                {{ getAppointmentStatusLabel(apt.status) }}
+              </span>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- SHARE ---- -->
+      <div *ngIf="activeTab === 'share'" class="tab-pane share-pane">
+        <div class="pane-header">
+          <h2><i class="bi bi-share"></i> Partage de Dossier</h2>
+        </div>
+        <div class="share-card">
+          <div class="share-icon-main"><i class="bi bi-shield-lock"></i></div>
+          <h3>Partager votre dossier médical</h3>
+          <p>Accordez l'accès à votre dossier médical à un médecin de votre choix. L'accès est sécurisé et révocable à tout moment.</p>
+
+          <div class="share-success" *ngIf="shareSuccess">
+            <i class="bi bi-check-circle-fill"></i> {{ shareSuccess }}
+          </div>
+
+          <div class="share-form">
+            <label>Sélectionner un médecin</label>
+            <select [(ngModel)]="selectedDoctorShare" class="share-select">
+              <option value="">— Choisir un médecin —</option>
+              <option *ngFor="let doc of doctors" [value]="doc.id">
+                Dr. {{ doc.firstName }} {{ doc.lastName }}
+                <ng-container *ngIf="doc.specialty"> — {{ doc.specialty }}</ng-container>
+              </option>
+            </select>
+            <button class="btn-share" (click)="shareRecord()" [disabled]="!selectedDoctorShare">
+              <i class="bi bi-send-fill"></i> Partager l'accès
+            </button>
+          </div>
+
+          <div class="share-notice">
+            <i class="bi bi-info-circle"></i>
+            Le médecin sélectionné pourra consulter votre historique médical, vos examens et vos prescriptions. Vous pourrez révoquer cet accès à tout moment.
+          </div>
+        </div>
+      </div>
+
+      <!-- ---- CHATBOT ---- -->
+      <div *ngIf="activeTab === 'chatbot'" class="tab-pane chatbot-pane">
+        <div class="chatbot-wrapper">
+
+          <div class="chatbot-header">
+            <div class="bot-avatar"><i class="bi bi-robot"></i></div>
+            <div class="bot-title">
+              <h3>Assistant Médical IA</h3>
+              <p>Analysez votre dossier médical avec l'intelligence artificielle</p>
+            </div>
+            <div class="bot-status"><span class="dot-green"></span> En ligne</div>
+          </div>
+
+          <div class="chat-messages" #chatContainer>
+            <!-- Welcome message -->
+            <div class="chat-msg bot-msg" *ngIf="chatMessages.length === 0">
+              <div class="msg-avatar-bot"><i class="bi bi-robot"></i></div>
+              <div class="msg-bubble">
+                <div class="msg-content">
+                  <strong>Bonjour {{ patient?.firstName || currentUser?.firstName }} !</strong> Je suis votre Assistant Médical intelligent. Je peux analyser votre dossier SmartMedical pour vous aider à mieux comprendre vos diagnostics, examens et prescriptions.
+                  <br><br>Que souhaitez-vous savoir ?
+                </div>
+                <div class="msg-time">Maintenant</div>
+              </div>
+            </div>
+
+            <!-- Message history -->
+            <ng-container *ngFor="let msg of chatMessages">
+              <div class="chat-msg user-msg" *ngIf="msg.role === 'user'">
+                <div class="msg-bubble user-bubble">
+                  <div class="msg-content">{{ msg.content }}</div>
+                  <div class="msg-time">{{ msg.timestamp | date:'HH:mm' }}</div>
+                </div>
+                <div class="msg-avatar-user">{{ getPatientInitials() }}</div>
+              </div>
+              <div class="chat-msg bot-msg" *ngIf="msg.role === 'assistant'">
+                <div class="msg-avatar-bot"><i class="bi bi-robot"></i></div>
+                <div class="msg-bubble">
+                  <div class="msg-content" [innerHTML]="formatMarkdown(msg.content)"></div>
+                  <div class="msg-time">{{ msg.timestamp | date:'HH:mm' }}</div>
+                </div>
+              </div>
+            </ng-container>
+
+            <!-- Typing indicator -->
+            <div class="chat-msg bot-msg" *ngIf="chatLoading">
+              <div class="msg-avatar-bot"><i class="bi bi-robot"></i></div>
+              <div class="msg-bubble">
+                <div class="typing-indicator">
+                  <span></span><span></span><span></span>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Quick suggestions -->
+          <div class="chat-suggestions" *ngIf="chatMessages.length < 2">
+            <button *ngFor="let sug of chatSuggestions" class="suggestion-btn" (click)="sendChatMessage(sug)">
+              {{ sug }}
+            </button>
+          </div>
+
+          <!-- Input -->
+          <div class="chat-input-area">
+            <textarea
+              [(ngModel)]="chatInput"
+              (keydown)="onChatKeydown($event)"
+              placeholder="Posez votre question médicale… (Entrée pour envoyer)"
+              rows="2"
+              [disabled]="chatLoading"
+            ></textarea>
+            <button class="btn-send" (click)="sendChatMessage()" [disabled]="!chatInput.trim() || chatLoading">
+              <i class="bi bi-send-fill"></i>
+            </button>
+          </div>
+
+          <div class="chat-disclaimer">
+            <i class="bi bi-shield-check"></i>
+            L'Assistant IA fournit des informations à titre indicatif uniquement. <strong>Cette recommandation ne remplace pas l'avis du médecin.</strong>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </ng-container>
+</div>

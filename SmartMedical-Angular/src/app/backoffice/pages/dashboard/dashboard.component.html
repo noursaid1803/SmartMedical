@@ -1,0 +1,195 @@
+<div class="dashboard-admin">
+
+  <!-- Header -->
+  <div class="dash-header">
+    <div class="dash-title">
+      <h2><i class="bi bi-speedometer2"></i> Tableau de bord</h2>
+      <p>Vue d'ensemble de la plateforme SmartMedical</p>
+    </div>
+    <div class="dash-date">
+      <i class="bi bi-calendar3"></i>
+      {{ today | date:'EEEE dd MMMM yyyy':'':'fr' }}
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div class="loading-bar" *ngIf="loadingStats">
+    <div class="loading-progress"></div>
+  </div>
+
+  <!-- Stats Cards -->
+  <div class="stats-grid">
+    <div class="stat-card" *ngFor="let stat of stats">
+      <div class="stat-inner">
+        <div class="stat-icon-wrap" [ngClass]="'icon-' + stat.color">
+          <i [class]="'bi ' + stat.icon"></i>
+        </div>
+        <div class="stat-body">
+          <div class="stat-val">{{ stat.value }}</div>
+          <div class="stat-label">{{ stat.title }}</div>
+          <div class="stat-trend" [class.trend-up]="stat.trendUp">
+            <i class="bi" [class.bi-arrow-up-short]="stat.trendUp" [class.bi-arrow-down-short]="!stat.trendUp"></i>
+            {{ stat.trend }} ce mois
+          </div>
+        </div>
+      </div>
+      <div class="stat-wave"></div>
+    </div>
+  </div>
+
+  <!-- Second row: Specialty breakdown + Usage -->
+  <div class="dash-row">
+
+    <!-- Specialty Breakdown -->
+    <div class="dash-card specialty-card">
+      <div class="card-header-custom">
+        <h5><i class="bi bi-pie-chart-fill"></i> Répartition par Spécialité</h5>
+        <span class="badge-count">{{ totalDoctors }} médecins</span>
+      </div>
+
+      <div *ngIf="specialtyStats.length === 0 && !loadingStats" class="empty-specialty">
+        <i class="bi bi-graph-up"></i>
+        <p>Aucune donnée disponible</p>
+      </div>
+
+      <div class="specialty-list">
+        <div class="specialty-item" *ngFor="let spec of specialtyStats">
+          <div class="spec-top">
+            <div class="spec-info">
+              <div class="spec-dot" [style.background]="spec.color"></div>
+              <span class="spec-name">{{ spec.name }}</span>
+            </div>
+            <div class="spec-count-wrap">
+              <span class="spec-count">{{ spec.count }}</span>
+              <span class="spec-pct">{{ spec.percent }}%</span>
+            </div>
+          </div>
+          <div class="spec-bar-bg">
+            <div class="spec-bar-fill" [style.width.%]="spec.percent" [style.background]="spec.color"></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Usage & AI Stats -->
+    <div class="dash-right-col">
+
+      <!-- AI Usage Card -->
+      <div class="dash-card ai-card">
+        <div class="card-header-custom">
+          <h5><i class="bi bi-cpu-fill"></i> Intelligence Artificielle</h5>
+        </div>
+        <div class="ai-stats-row">
+          <div class="ai-stat">
+            <div class="ai-stat-circle" style="background: linear-gradient(135deg,#4f46e5,#7c3aed)">
+              <i class="bi bi-cpu"></i>
+            </div>
+            <div class="ai-stat-val">{{ totalAiAnalyses }}</div>
+            <div class="ai-stat-label">Analyses IA réalisées</div>
+          </div>
+          <div class="ai-stat">
+            <div class="ai-stat-circle" style="background: linear-gradient(135deg,#0ea5e9,#2563eb)">
+              <i class="bi bi-folder2"></i>
+            </div>
+            <div class="ai-stat-val">{{ totalRecords }}</div>
+            <div class="ai-stat-label">Dossiers créés</div>
+          </div>
+        </div>
+
+        <!-- Usage Rate -->
+        <div class="usage-section">
+          <div class="usage-label">
+            <span>Taux d'utilisation</span>
+            <strong>{{ getUsageRate() }}%</strong>
+          </div>
+          <div class="usage-bar-bg">
+            <div class="usage-bar-fill" [style.width.%]="getUsageRate()"></div>
+          </div>
+          <p class="usage-note">
+            <i class="bi bi-info-circle"></i>
+            Ratio consultations / patients enregistrés
+          </p>
+        </div>
+      </div>
+
+      <!-- Quick Links -->
+      <div class="dash-card quick-links-card">
+        <div class="card-header-custom">
+          <h5><i class="bi bi-lightning-fill"></i> Accès Rapides</h5>
+        </div>
+        <div class="quick-links">
+          <a routerLink="/admin/doctors" class="quick-link">
+            <div class="ql-icon" style="background:#eff6ff;color:#2563eb"><i class="bi bi-person-badge"></i></div>
+            <span>Gérer les médecins</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          <a routerLink="/admin/patients" class="quick-link">
+            <div class="ql-icon" style="background:#f0fdf4;color:#16a34a"><i class="bi bi-people"></i></div>
+            <span>Gérer les patients</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          <a routerLink="/admin/appointments" class="quick-link">
+            <div class="ql-icon" style="background:#fffbeb;color:#d97706"><i class="bi bi-calendar-check"></i></div>
+            <span>Rendez-vous</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+          <a routerLink="/admin/settings" class="quick-link">
+            <div class="ql-icon" style="background:#faf5ff;color:#7c3aed"><i class="bi bi-gear"></i></div>
+            <span>Paramètres</span>
+            <i class="bi bi-chevron-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Recent Appointments Table -->
+  <div class="dash-card appointments-card">
+    <div class="card-header-custom">
+      <h5><i class="bi bi-calendar-week"></i> Rendez-vous récents</h5>
+      <a routerLink="/admin/appointments" class="btn-see-all">Voir tout <i class="bi bi-arrow-right"></i></a>
+    </div>
+    <div class="table-responsive">
+      <table class="modern-table">
+        <thead>
+          <tr>
+            <th>Patient</th>
+            <th>Médecin</th>
+            <th>Date</th>
+            <th>Heure</th>
+            <th>Statut</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngFor="let appt of recentAppointments">
+            <td>
+              <div class="table-patient">
+                <div class="table-avatar">{{ appt.patient[0] }}</div>
+                <span>{{ appt.patient }}</span>
+              </div>
+            </td>
+            <td class="text-doc">{{ appt.doctor }}</td>
+            <td>{{ appt.date | date:'dd/MM/yyyy' }}</td>
+            <td>{{ appt.time }}</td>
+            <td>
+              <span class="status-badge"
+                [class.status-confirmed]="appt.status === 'confirmé'"
+                [class.status-pending]="appt.status === 'en attente'">
+                <i class="bi" [class.bi-check-circle-fill]="appt.status === 'confirmé'" [class.bi-clock-fill]="appt.status === 'en attente'"></i>
+                {{ appt.status }}
+              </span>
+            </td>
+            <td>
+              <div class="table-actions">
+                <button class="tbl-btn view"><i class="bi bi-eye"></i></button>
+                <button class="tbl-btn delete"><i class="bi bi-trash"></i></button>
+              </div>
+            </td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+</div>

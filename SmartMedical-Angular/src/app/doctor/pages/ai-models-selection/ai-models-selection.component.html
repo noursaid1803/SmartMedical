@@ -1,0 +1,206 @@
+<div class="ai-models-container">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <button class="btn btn-back" (click)="goBack()">
+        <i class="bi bi-arrow-left"></i> Retour
+      </button>
+      <div class="header-title">
+        <i class="bi bi-cpu header-icon"></i>
+        <h1>Modèles IA & Références scientifiques</h1>
+      </div>
+    </div>
+  </header>
+
+  <!-- Image sélectionnée -->
+  <div class="selected-image-section" *ngIf="selectedImage">
+    <div class="image-card">
+      <div class="image-header">
+        <div class="image-title">
+          <i class="bi bi-image"></i>
+          <h3>Image à analyser</h3>
+        </div>
+        <div class="image-meta">
+          <span class="file-name">{{ selectedFileName }}</span>
+          <span class="detected-organ" *ngIf="detectedOrgan !== 'unknown'">
+            <i class="bi bi-geo-alt"></i>
+            {{ getOrganName(detectedOrgan) }} détecté
+          </span>
+          <span class="detected-organ unknown" *ngIf="detectedOrgan === 'unknown'">
+            <i class="bi bi-question-circle"></i>
+            Organe non identifié
+          </span>
+        </div>
+      </div>
+      <div class="image-content">
+        <img [src]="selectedImage" alt="IRM sélectionnée" class="selected-irm-image">
+        <button class="btn btn-change-image" (click)="changeImage()">
+          <i class="bi bi-arrow-repeat"></i>
+          Changer l'image
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Content -->
+  <div class="content-wrapper">
+    <div class="alert alert-info specialty-restriction" *ngIf="specialtyLocked && specialtyRestrictionMessage">
+      <strong>Restriction par spécialité :</strong> {{ specialtyRestrictionMessage }}
+    </div>
+    <div class="alert alert-warning" *ngIf="uploadBlockedBySpecialty">
+      L'import et l'analyse d'images scanner/IRM sont désactivés pour votre profil.
+    </div>
+
+    <!-- Section Catalogue -->
+    <div class="catalogue-section" *ngIf="!uploadBlockedBySpecialty">
+      <div class="catalogue-header">
+        <div class="catalogue-title">
+          <i class="bi bi-gear-wide-connected"></i>
+          <h2>Catalogue des modèles de diagnostic</h2>
+        </div>
+        <button class="btn btn-add-model">
+          <i class="bi bi-plus-lg"></i> Ajouter modèle
+        </button>
+      </div>
+
+      <!-- Models Grid -->
+      <div class="models-grid">
+        <div class="model-card" *ngFor="let model of aiModels" [class.selected]="selectedModel?.id === model.id" [class.inactive]="model.status === 'inactive'" [class.compatible]="checkCompatibility(model) && detectedOrgan !== 'unknown'" [class.incompatible]="!checkCompatibility(model) && detectedOrgan !== 'unknown'" (click)="selectModel(model)">
+          <!-- Compatibility Badge -->
+          <div class="compatibility-badge compatible" *ngIf="checkCompatibility(model) && detectedOrgan !== 'unknown'">
+            <i class="bi bi-check-circle"></i>
+            <span>Compatible avec {{ getOrganName(detectedOrgan) }}</span>
+          </div>
+          <div class="compatibility-badge incompatible" *ngIf="!checkCompatibility(model) && detectedOrgan !== 'unknown'">
+            <i class="bi bi-exclamation-triangle"></i>
+            <span>Requiert {{ getOrganName(model.organ) }}</span>
+          </div>
+          <!-- Card Header -->
+          <div class="model-header">
+            <div class="model-icon" [style.background-color]="model.color + '20'">
+              <span [style.color]="model.color">{{ model.icon }}</span>
+            </div>
+            <div class="model-info">
+              <h3 class="model-name">{{ model.name }}</h3>
+              <span class="model-status" [class.active]="model.status === 'active'" [class.inactive]="model.status === 'inactive'">
+                {{ model.status === 'active' ? 'Actif' : 'Inactif' }}
+              </span>
+            </div>
+            <div class="model-actions" *ngIf="selectedModel?.id === model.id">
+              <button class="btn-icon edit" title="Modifier">
+                <i class="bi bi-pencil-square"></i>
+              </button>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <p class="model-description">{{ model.description }}</p>
+
+          <!-- Accuracy Badge -->
+          <div class="model-accuracy" *ngIf="model.accuracy">
+            <span class="accuracy-label">Précision</span>
+            <span class="accuracy-value">{{ model.accuracy }}%</span>
+          </div>
+
+          <!-- Reference -->
+          <div class="model-reference">
+            <div class="ref-header">
+              <i class="bi bi-book"></i>
+              <span>Référence scientifique</span>
+            </div>
+            <div class="ref-content">
+              <p class="ref-title">« {{ model.reference.title }} » — <em>{{ model.reference.journal }}</em></p>
+              <a class="ref-doi" (click)="openDoiLink(model.reference.doi); $event.stopPropagation()">
+                DOI: {{ model.reference.doi }}
+              </a>
+            </div>
+          </div>
+
+          <!-- Card Actions -->
+          <div class="card-actions">
+            <button class="btn-icon toggle" [class.active]="model.status === 'active'" title="Activer/Désactiver">
+              <i class="bi bi-check-square" *ngIf="model.status === 'active'"></i>
+              <i class="bi bi-square" *ngIf="model.status === 'inactive'"></i>
+            </button>
+            <span class="action-label">{{ model.status === 'active' ? 'Désactiver' : 'Activer' }}</span>
+            <button class="btn-icon delete" title="Supprimer">
+              <i class="bi bi-trash3"></i>
+            </button>
+          </div>
+
+          <!-- Selection Indicator -->
+          <div class="selection-indicator" *ngIf="selectedModel?.id === model.id">
+            <i class="bi bi-check-circle-fill"></i>
+            <span>Modèle sélectionné</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Selected Model Panel -->
+    <div class="selected-panel" *ngIf="selectedModel" [class.warning]="compatibilityWarning">
+      <div class="panel-content">
+        <div class="selected-info">
+          <div class="selected-icon" [style.background-color]="selectedModel.color + '20'">
+            <span [style.color]="selectedModel.color">{{ selectedModel.icon }}</span>
+          </div>
+          <div class="selected-details">
+            <h3>{{ selectedModel.name }}</h3>
+            <p>{{ selectedModel.description }}</p>
+
+            <!-- Message de compatibilité -->
+            <p class="compatibility-message success" *ngIf="!compatibilityWarning && detectedOrgan !== 'unknown'">
+              <i class="bi bi-check-circle-fill"></i>
+              ✅ Ce modèle est compatible avec votre image ({{ getOrganName(detectedOrgan) }})
+            </p>
+
+            <!-- Avertissement d'incompatibilité -->
+            <div class="compatibility-message warning" *ngIf="compatibilityWarning">
+              <i class="bi bi-exclamation-triangle-fill"></i>
+              <div class="warning-text">
+                <strong>⚠️ Incompatibilité détectée</strong>
+                <span>Ce modèle est conçu pour analyser des images de <strong>{{ getOrganName(selectedModel.organ) }}</strong>, mais votre image semble être un <strong>{{ getOrganName(detectedOrgan) }}</strong>.</span>
+                <span class="warning-hint">L'analyse pourrait produire des résultats incorrects ou non fiables.</span>
+              </div>
+            </div>
+
+            <!-- Information quand organe non identifié -->
+            <p class="compatibility-message info" *ngIf="detectedOrgan === 'unknown'">
+              <i class="bi bi-info-circle-fill"></i>
+              ℹ️ Organe non identifié automatiquement. Veuillez vérifier que ce modèle correspond à votre image.
+            </p>
+
+            <p class="image-confirm" *ngIf="selectedImage && !compatibilityWarning">
+              <i class="bi bi-image"></i>
+              Analyser l'image sélectionnée avec ce modèle
+            </p>
+          </div>
+        </div>
+
+        <!-- Boutons d'action normaux -->
+        <div class="panel-actions" *ngIf="!compatibilityWarning">
+          <button class="btn btn-confirm" (click)="confirmSelection()">
+            <i class="bi bi-check-lg"></i>
+            Lancer l'analyse
+          </button>
+          <button class="btn btn-cancel" (click)="cancelSelection()">
+            <i class="bi bi-x-lg"></i>
+            Changer
+          </button>
+        </div>
+
+        <!-- Boutons d'action avec avertissement -->
+        <div class="panel-actions warning" *ngIf="compatibilityWarning">
+          <button class="btn btn-force" (click)="forceSelectModel()">
+            <i class="bi bi-exclamation-triangle"></i>
+            Forcer l'analyse
+          </button>
+          <button class="btn btn-cancel" (click)="cancelSelection()">
+            <i class="bi bi-arrow-left"></i>
+            Changer de modèle
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

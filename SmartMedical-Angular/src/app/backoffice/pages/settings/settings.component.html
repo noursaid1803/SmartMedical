@@ -1,0 +1,73 @@
+<div class="settings-page">
+  <!-- Page Header -->
+  <div class="mb-4">
+    <h2 class="mb-1">Paramètres</h2>
+    <p class="text-muted mb-0">Gérez votre profil et les paramètres du système</p>
+  </div>
+
+  <div class="row g-4">
+    <!-- Profile Settings -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0"><i class="bi bi-person me-2"></i>Profil</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="profileForm" (ngSubmit)="onProfileSubmit()">
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Prénom</label>
+                <input type="text" class="form-control" formControlName="firstName">
+              </div>
+              <div class="col-md-6 mb-3">
+                <label class="form-label">Nom</label>
+                <input type="text" class="form-control" formControlName="lastName">
+              </div>
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Email</label>
+              <input type="email" class="form-control" formControlName="email">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Téléphone</label>
+              <input type="tel" class="form-control" formControlName="phone">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-check-lg me-2"></i>
+              Sauvegarder
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+
+    <!-- Password Change -->
+    <div class="col-lg-6">
+      <div class="card border-0 shadow-sm">
+        <div class="card-header bg-white py-3">
+          <h5 class="mb-0"><i class="bi bi-shield-lock me-2"></i>Sécurité</h5>
+        </div>
+        <div class="card-body">
+          <form [formGroup]="passwordForm" (ngSubmit)="onPasswordSubmit()">
+            <div class="mb-3">
+              <label class="form-label">Mot de passe actuel</label>
+              <input type="password" class="form-control" formControlName="currentPassword" placeholder="••••••••">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Nouveau mot de passe</label>
+              <input type="password" class="form-control" formControlName="newPassword" placeholder="••••••••">
+            </div>
+            <div class="mb-3">
+              <label class="form-label">Confirmer le mot de passe</label>
+              <input type="password" class="form-control" formControlName="confirmPassword" placeholder="••••••••">
+            </div>
+            <button type="submit" class="btn btn-primary">
+              <i class="bi bi-key me-2"></i>
+              Changer le mot de passe
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,43 @@
+<!-- Page Header avec image de fond -->
+<section class="page-header py-5 position-relative overflow-hidden">
+  <div class="position-absolute top-0 start-0 w-100 h-100">
+    <img [src]="doctors[0].image" alt="Doctors background" class="w-100 h-100 object-fit-cover" style="opacity: 0.2;">
+    <div class="position-absolute top-0 start-0 w-100 h-100 bg-primary" style="mix-blend-mode: multiply;"></div>
+  </div>
+  <div class="container position-relative z-1">
+    <div class="row">
+      <div class="col-lg-8 text-white">
+        <h1 class="display-5 fw-bold">Nos Médecins</h1>
+        <p class="lead mb-0">Une équipe d'experts qualifiés à votre service</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Doctors Grid -->
+<section class="doctors-grid py-5">
+  <div class="container">
+    <div class="row g-4">
+      <div class="col-md-6 col-lg-3" *ngFor="let doctor of doctors">
+        <div class="card h-100 border-0 shadow doctor-card">
+          <div class="position-relative overflow-hidden" style="height: 250px;">
+            <img [src]="doctor.image" [alt]="doctor.name" class="w-100 h-100 object-fit-cover doctor-image">
+          </div>
+          <div class="card-body p-4">
+            <h5 class="card-title mb-1">{{ doctor.name }}</h5>
+            <p class="text-primary fw-semibold mb-2">{{ doctor.specialty }}</p>
+            <p class="card-text text-muted small mb-3">{{ doctor.description }}</p>
+            <div class="d-flex align-items-center gap-2 mb-3">
+              <i class="bi bi-telephone text-primary"></i>
+              <small class="text-muted">{{ doctor.phone }}</small>
+            </div>
+            <a routerLink="/frontoffice/appointment" class="btn btn-outline-primary w-100">
+              <i class="bi bi-calendar-check me-2"></i>
+              Prendre RDV
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

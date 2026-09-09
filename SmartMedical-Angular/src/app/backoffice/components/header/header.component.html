@@ -1,0 +1,81 @@
+<header class="header">
+  <div class="container-fluid">
+    <div class="d-flex align-items-center justify-content-between">
+      <!-- Left: Toggle + Title -->
+      <div class="d-flex align-items-center gap-3">
+        <button class="sidebar-toggle" (click)="onToggleSidebar()" title="Menu">
+          <i class="bi bi-list"></i>
+        </button>
+        
+        <!-- Optional: Page Title -->
+        <!-- <div class="page-title d-none d-md-block">
+          <div>Tableau de Bord</div>
+          <div class="page-subtitle">Vue d'ensemble de la clinique</div>
+        </div> -->
+      </div>
+      
+      <!-- Right: Actions + User -->
+      <div class="d-flex align-items-center gap-2">
+        <!-- Search Bar (desktop only) -->
+        <!-- <div class="search-bar d-none d-lg-block">
+          <i class="bi bi-search search-icon"></i>
+          <input type="text" class="search-input" placeholder="Rechercher...">
+        </div> -->
+        
+        <!-- Notifications -->
+        <button class="notification-btn" title="Notifications">
+          <i class="bi bi-bell"></i>
+          <span class="notification-badge">3</span>
+        </button>
+        
+        <!-- User Menu -->
+        <div class="dropdown user-menu">
+          <button class="dropdown-toggle" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+            <div class="user-avatar">
+              <i class="bi bi-person"></i>
+            </div>
+            <span class="user-name d-none d-md-block" *ngIf="authService.currentUser$ | async as user">
+              {{ user.firstName }}
+            </span>
+          </button>
+          <ul class="dropdown-menu dropdown-menu-end">
+            <!-- User Info Header -->
+            <li class="dropdown-header">
+              <div class="user-info">
+                <div class="user-avatar-large">
+                  <i class="bi bi-person"></i>
+                </div>
+                <div class="user-details" *ngIf="authService.currentUser$ | async as user">
+                  <div class="user-name">{{ user.firstName }} {{ user.lastName }}</div>
+                  <div class="user-role">{{ user.roles?.[0] || 'Utilisateur' }}</div>
+                </div>
+              </div>
+            </li>
+            
+            <li><hr class="dropdown-divider"></li>
+            
+            <!-- Menu Items -->
+            <li>
+              <a class="dropdown-item" routerLink="/profile">
+                <i class="bi bi-person"></i>Mon Profil
+              </a>
+            </li>
+            <li>
+              <a class="dropdown-item" routerLink="/admin/settings">
+                <i class="bi bi-gear"></i>Paramètres
+              </a>
+            </li>
+            
+            <li><hr class="dropdown-divider"></li>
+            
+            <li>
+              <a class="dropdown-item text-danger" href="#" (click)="logout(); $event.preventDefault()">
+                <i class="bi bi-box-arrow-right"></i>Déconnexion
+              </a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</header>

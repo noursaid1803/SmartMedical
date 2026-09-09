@@ -1,0 +1,908 @@
+<div class="medical-record-form-container">
+  <!-- Header -->
+  <header class="page-header">
+    <div class="header-left">
+      <h1>{{ pageTitle }}</h1>
+      <p *ngIf="patient">Patient : <strong>{{ getPatientFullName() }}</strong>
+        <span class="edit-badge" *ngIf="isEditMode"> — mode modification</span>
+      </p>
+      <p *ngIf="!patient" class="subtitle">Créer un nouveau patient et son dossier médical</p>
+    </div>
+    <div class="header-right">
+      <button class="btn btn-secondary" (click)="cancel()">Annuler</button>
+    </div>
+  </header>
+
+  <!-- Messages -->
+  <div *ngIf="successMessage" class="alert alert-success">
+    {{ successMessage }}
+  </div>
+  <div *ngIf="errorMessage" class="alert alert-danger">
+    {{ errorMessage }}
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="loading" class="loading-overlay">
+    <p>Chargement...</p>
+  </div>
+
+  <!-- Section Patient -->
+  <div class="form-section patient-section" *ngIf="!loading">
+    <h2>👤 Informations du Patient</h2>
+
+    <!-- Patient existant -->
+    <div *ngIf="patient && !showPatientForm" class="patient-card">
+      <div class="patient-header">
+        <div class="patient-avatar">{{ (patient.firstName && patient.firstName[0]) || '?' }}{{ (patient.lastName && patient.lastName[0]) || '?' }}</div>
+        <div class="patient-info">
+          <h3>{{ patient.firstName || 'Nouveau' }} {{ patient.lastName || 'Patient' }}</h3>
+          <p class="patient-details">
+            <span *ngIf="patient.dateOfBirth">🎂 {{ calculateAge(patient.dateOfBirth) }} ans</span>
+            <span *ngIf="patient.gender">| {{ patient.gender === 'M' ? '♂️ Masculin' : patient.gender === 'F' ? '♀️ Féminin' : '⚧ Autre' }}</span>
+            <span *ngIf="patient.bloodType && patient.bloodType !== 'UNKNOWN'">| 🩸 {{ patient.bloodType }}</span>
+          </p>
+        </div>
+        <button type="button" class="btn btn-secondary btn-sm" (click)="showPatientForm = true">
+          ✏️ Modifier
+        </button>
+      </div>
+
+      <div class="patient-body">
+        <div class="info-grid">
+          <div class="info-item" *ngIf="patient.phone">
+            <label>📞 Téléphone</label>
+            <span>{{ patient.phone }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.email">
+            <label>📧 Email</label>
+            <span>{{ patient.email }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.address || patient.city || patient.region">
+            <label>📍 Adresse</label>
+            <span>{{ patient.address }}{{ patient.city ? ', ' + patient.city : '' }}{{ patient.region ? ', ' + patient.region : '' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.height">
+            <label>📏 Taille</label>
+            <span>{{ patient.height }} cm</span>
+          </div>
+          <div class="info-item" *ngIf="patient.weight">
+            <label>⚖️ Poids</label>
+            <span>{{ patient.weight }} kg</span>
+          </div>
+          <div class="info-item" *ngIf="patient.occupation">
+            <label>💼 Profession</label>
+            <span>{{ patient.occupation }}{{ patient.employer ? ' - ' + patient.employer : '' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.allergies && patient.allergies.length > 0">
+            <label>⚠️ Allergies</label>
+            <span class="tag-list">
+              <span class="tag tag-warning" *ngFor="let allergy of patient.allergies">{{ allergy }}</span>
+            </span>
+          </div>
+          <div class="info-item" *ngIf="patient.chronicDiseases && patient.chronicDiseases.length > 0">
+            <label>🏥 Maladies chroniques</label>
+            <span class="tag-list">
+              <span class="tag tag-danger" *ngFor="let disease of patient.chronicDiseases">{{ disease }}</span>
+            </span>
+          </div>
+          <div class="info-item" *ngIf="patient.emergencyContact?.name">
+            <label>🚨 Contact d'urgence</label>
+            <span>{{ patient.emergencyContact.name }} ({{ patient.emergencyContact.relation || 'Non spécifié' }})<br>{{ patient.emergencyContact.phone || 'Pas de téléphone' }}</span>
+          </div>
+          <div class="info-item" *ngIf="patient.insuranceInfo && patient.insuranceInfo.provider">
+            <label>🛡️ Assurance</label>
+            <span>{{ patient.insuranceInfo?.provider }} - {{ patient.insuranceInfo?.policyNumber || 'N/A' }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Bouton créer nouveau patient -->
+    <div *ngIf="!patient && !showPatientForm" class="new-patient-prompt">
+      <p>Aucun patient sélectionné. Veuillez créer un nouveau patient pour ce dossier médical.</p>
+      <button type="button" class="btn btn-primary" (click)="showPatientForm = true">
+        ➕ Créer un nouveau patient
+      </button>
+    </div>
+
+    <!-- Formulaire patient -->
+    <form [formGroup]="patientForm" *ngIf="showPatientForm" class="patient-form">
+      <h3>{{ patientId ? 'Informations du Patient' : 'Nouveau Patient' }}</h3>
+
+      <!-- Informations de base -->
+      <div class="form-subsection">
+        <h4>Informations de base</h4>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="firstName">Prénom *</label>
+            <input type="text" id="firstName" formControlName="firstName" class="form-control"
+                   [class.is-invalid]="patientForm.get('firstName')?.invalid && patientForm.get('firstName')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="lastName">Nom *</label>
+            <input type="text" id="lastName" formControlName="lastName" class="form-control"
+                   [class.is-invalid]="patientForm.get('lastName')?.invalid && patientForm.get('lastName')?.touched">
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="dateOfBirth">Date de naissance *</label>
+            <input type="date" id="dateOfBirth" formControlName="dateOfBirth" class="form-control"
+                   [class.is-invalid]="patientForm.get('dateOfBirth')?.invalid && patientForm.get('dateOfBirth')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="gender">Genre *</label>
+            <select id="gender" formControlName="gender" class="form-control"
+                    [class.is-invalid]="patientForm.get('gender')?.invalid && patientForm.get('gender')?.touched">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let g of genders" [value]="g.value">{{ g.label }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="bloodType">Groupe sanguin</label>
+            <select id="bloodType" formControlName="bloodType" class="form-control">
+              <option *ngFor="let bt of bloodTypes" [value]="bt">{{ bt === 'UNKNOWN' ? 'Non spécifié' : bt }}</option>
+            </select>
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="phone">Téléphone *</label>
+            <input type="tel" id="phone" formControlName="phone" class="form-control" placeholder="+216 XX XXX XXX"
+                   [class.is-invalid]="patientForm.get('phone')?.invalid && patientForm.get('phone')?.touched">
+          </div>
+          <div class="form-group">
+            <label for="patientEmail">Email</label>
+            <input type="email" id="patientEmail" formControlName="email" class="form-control" placeholder="patient@email.com">
+          </div>
+        </div>
+      </div>
+
+      <!-- Adresse -->
+      <div class="form-subsection">
+        <h4>Adresse</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="address">Adresse</label>
+            <input type="text" id="address" formControlName="address" class="form-control" placeholder="Rue, immeuble, appartement...">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="city">Ville</label>
+            <input type="text" id="city" formControlName="city" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="region">Région</label>
+            <select id="region" formControlName="region" class="form-control">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let r of regions" [value]="r">{{ r }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="postalCode">Code postal</label>
+            <input type="text" id="postalCode" formControlName="postalCode" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Informations médicales -->
+      <div class="form-subsection">
+        <h4>Informations médicales</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="height">Taille (cm)</label>
+            <input type="number" id="height" formControlName="height" class="form-control" placeholder="175">
+          </div>
+          <div class="form-group">
+            <label for="patientWeight">Poids (kg)</label>
+            <input type="number" id="patientWeight" formControlName="weight" class="form-control" placeholder="70" step="0.1">
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="allergies">Allergies (séparées par des virgules)</label>
+          <input type="text" id="allergies" formControlName="allergies" class="form-control" placeholder="Ex: Pénicilline, Arachides, Poussière...">
+        </div>
+        <div class="form-group">
+          <label for="chronicDiseases">Maladies chroniques (séparées par des virgules)</label>
+          <input type="text" id="chronicDiseases" formControlName="chronicDiseases" class="form-control" placeholder="Ex: Diabète, Hypertension, Asthme...">
+        </div>
+        <div class="form-group">
+          <label for="currentMedications">Médicaments actuels (séparés par des virgules)</label>
+          <input type="text" id="currentMedications" formControlName="currentMedications" class="form-control" placeholder="Ex: Metformine 500mg, Amlor 5mg...">
+        </div>
+      </div>
+
+      <!-- Profession -->
+      <div class="form-subsection">
+        <h4>Informations professionnelles</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="occupation">Profession</label>
+            <input type="text" id="occupation" formControlName="occupation" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="employer">Employeur</label>
+            <input type="text" id="employer" formControlName="employer" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Contact d'urgence -->
+      <div class="form-subsection">
+        <h4>🚨 Contact d'urgence (Obligatoire)</h4>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="emergencyContactName">Nom complet *</label>
+            <input type="text" id="emergencyContactName" formControlName="emergencyContactName" class="form-control"
+                   [class.is-invalid]="patientForm.get('emergencyContactName')?.invalid && patientForm.get('emergencyContactName')?.touched">
+          </div>
+          <div class="form-group required">
+            <label for="emergencyContactPhone">Téléphone *</label>
+            <input type="tel" id="emergencyContactPhone" formControlName="emergencyContactPhone" class="form-control" placeholder="+216 XX XXX XXX"
+                   [class.is-invalid]="patientForm.get('emergencyContactPhone')?.invalid && patientForm.get('emergencyContactPhone')?.touched">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group required">
+            <label for="emergencyContactRelation">Relation avec le patient *</label>
+            <select id="emergencyContactRelation" formControlName="emergencyContactRelation" class="form-control"
+                    [class.is-invalid]="patientForm.get('emergencyContactRelation')?.invalid && patientForm.get('emergencyContactRelation')?.touched">
+              <option value="">Sélectionner...</option>
+              <option *ngFor="let rel of relations" [value]="rel">{{ rel }}</option>
+            </select>
+          </div>
+          <div class="form-group">
+            <label for="emergencyContactEmail">Email du contact</label>
+            <input type="email" id="emergencyContactEmail" formControlName="emergencyContactEmail" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Assurance -->
+      <div class="form-subsection">
+        <h4>🛡️ Assurance santé</h4>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="insuranceProvider">Assureur</label>
+            <input type="text" id="insuranceProvider" formControlName="insuranceProvider" class="form-control" placeholder="Ex: CNAM, STAR, GAT...">
+          </div>
+          <div class="form-group">
+            <label for="insurancePolicyNumber">Numéro de police</label>
+            <input type="text" id="insurancePolicyNumber" formControlName="insurancePolicyNumber" class="form-control">
+          </div>
+        </div>
+      </div>
+
+      <!-- Actions -->
+      <div class="form-actions">
+        <button type="button" class="btn btn-secondary" (click)="cancel()">
+          ❌ Annuler
+        </button>
+        <button type="button" class="btn btn-primary" (click)="patientId ? updateExistingPatient() : createNewPatient()" [disabled]="saving">
+          <span *ngIf="saving">💾 Enregistrement...</span>
+          <span *ngIf="!saving && !patientId">💾 Créer le patient</span>
+          <span *ngIf="!saving && patientId">💾 Mettre à jour le patient</span>
+        </button>
+      </div>
+    </form>
+  </div>
+
+  <!-- Formulaire dossier médical -->
+  <form [formGroup]="recordForm" (ngSubmit)="onSubmit()" *ngIf="!loading && patient">
+
+    <!-- Section 1: Consultation -->
+    <div class="form-section">
+      <h2>📅 Consultation</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="consultationDate">Date de consultation *</label>
+          <input type="date" id="consultationDate" formControlName="consultationDate" class="form-control"
+                 [class.is-invalid]="recordForm.get('consultationDate')?.invalid && recordForm.get('consultationDate')?.touched">
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label for="reasonForVisit">Motif de la visite *</label>
+        <input type="text" id="reasonForVisit" formControlName="reasonForVisit" class="form-control"
+               placeholder="Ex: Douleurs thoraciques, Fièvre persistante..."
+               [class.is-invalid]="recordForm.get('reasonForVisit')?.invalid && recordForm.get('reasonForVisit')?.touched">
+      </div>
+
+      <div class="form-group">
+        <label for="symptoms">Symptômes *</label>
+        <textarea id="symptoms" formControlName="symptoms" class="form-control" rows="3"
+                  placeholder="Décrivez les symptômes observés..."
+                  [class.is-invalid]="recordForm.get('symptoms')?.invalid && recordForm.get('symptoms')?.touched"></textarea>
+      </div>
+    </div>
+
+    <!-- Section 2: Examen physique -->
+    <div class="form-section">
+      <h2>🏥 Examen physique</h2>
+      <div class="form-row">
+        <div class="form-group">
+          <label for="bloodPressure">Tension artérielle</label>
+          <input type="text" id="bloodPressure" formControlName="bloodPressure" class="form-control"
+                 placeholder="120/80 mmHg">
+        </div>
+
+        <div class="form-group">
+          <label for="heartRate">Fréquence cardiaque</label>
+          <input type="number" id="heartRate" formControlName="heartRate" class="form-control"
+                 placeholder="bpm">
+        </div>
+
+        <div class="form-group">
+          <label for="temperature">Température</label>
+          <input type="number" id="temperature" formControlName="temperature" class="form-control"
+                 placeholder="°C" step="0.1">
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label for="weight">Poids</label>
+          <input type="number" id="weight" formControlName="weight" class="form-control"
+                 placeholder="kg" step="0.1">
+        </div>
+
+        <div class="form-group">
+          <label for="height">Taille</label>
+          <input type="number" id="height" formControlName="height" class="form-control"
+                 placeholder="cm">
+        </div>
+
+        <div class="form-group">
+          <label for="oxygenSaturation">Saturation O₂</label>
+          <input type="number" id="oxygenSaturation" formControlName="oxygenSaturation" class="form-control"
+                 placeholder="%">
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 3: Diagnostic -->
+    <div class="form-section">
+      <h2>🔍 Diagnostic</h2>
+      <div class="form-group">
+        <label for="diagnosis">Diagnostic *</label>
+        <textarea id="diagnosis" formControlName="diagnosis" class="form-control" rows="3"
+                  placeholder="Diagnostic établi..."
+                  [class.is-invalid]="recordForm.get('diagnosis')?.invalid && recordForm.get('diagnosis')?.touched"></textarea>
+      </div>
+
+      <div class="form-group">
+        <label>Sévérité</label>
+        <div class="severity-options">
+          <label *ngFor="let sev of severities" class="severity-label"
+                 [style.border-color]="sev.color"
+                 [class.selected]="recordForm.get('severity')?.value === sev.value">
+            <input type="radio" formControlName="severity" [value]="sev.value">
+            <span class="severity-dot" [style.background-color]="sev.color"></span>
+            {{ sev.label }}
+          </label>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 4: Traitement -->
+    <div class="form-section">
+      <h2>💊 Traitement prescrit</h2>
+
+      <div formArrayName="medications">
+        <div *ngFor="let med of medications.controls; let i = index" [formGroupName]="i" class="medication-item">
+          <div class="item-header">
+            <h4>Médicament {{ i + 1 }}</h4>
+            <button type="button" class="btn-remove" (click)="removeMedication(i)">🗑️</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom du médicament *</label>
+              <input type="text" formControlName="name" class="form-control" placeholder="Ex: Doliprane">
+            </div>
+            <div class="form-group">
+              <label>Dosage *</label>
+              <input type="text" formControlName="dosage" class="form-control" placeholder="Ex: 500mg">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Fréquence *</label>
+              <input type="text" formControlName="frequency" class="form-control" placeholder="Ex: 3 fois par jour">
+            </div>
+            <div class="form-group">
+              <label>Durée *</label>
+              <input type="text" formControlName="duration" class="form-control" placeholder="Ex: 5 jours">
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Instructions</label>
+            <input type="text" formControlName="instructions" class="form-control"
+                   placeholder="Instructions spéciales (avant/après les repas, etc.)">
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-add" (click)="addMedication()">
+        + Ajouter un médicament
+      </button>
+    </div>
+
+    <!-- Section 5: Tests et examens -->
+    <div class="form-section">
+      <h2>🧪 Tests et examens</h2>
+
+      <div formArrayName="labTests">
+        <div *ngFor="let test of labTests.controls; let i = index" [formGroupName]="i" class="test-item">
+          <div class="item-header">
+            <h4>Test {{ i + 1 }}</h4>
+            <button type="button" class="btn-remove" (click)="removeLabTest(i)">🗑️</button>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Nom du test *</label>
+              <input type="text" formControlName="testName" class="form-control"
+                     placeholder="Ex: NFS, Glycémie, Radiographie...">
+            </div>
+            <div class="form-group">
+              <label>Résultat</label>
+              <input type="text" formControlName="result" class="form-control"
+                     placeholder="Résultat du test">
+            </div>
+          </div>
+          <div class="form-row">
+            <div class="form-group">
+              <label>Plage normale</label>
+              <input type="text" formControlName="normalRange" class="form-control"
+                     placeholder="Valeurs normales de référence">
+            </div>
+            <div class="form-group">
+              <label>Notes</label>
+              <input type="text" formControlName="notes" class="form-control"
+                     placeholder="Observations sur le résultat">
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <button type="button" class="btn btn-add" (click)="addLabTest()">
+        + Ajouter un test
+      </button>
+    </div>
+
+    <!-- Section IRM: Analyse IA - NOUVEAU FLUX -->
+    <div class="form-section irm-section">
+      <h2>🧠 Analyse IRM - Intelligence Artificielle</h2>
+      <p class="section-intro">Analyse automatique d'images médicales par IA pour détecter anomalies, tumeurs et lésions.</p>
+
+      <div class="alert alert-info specialty-restriction" *ngIf="specialtyLocked && specialtyRestrictionMessage">
+        <strong>Restriction par spécialité :</strong> {{ specialtyRestrictionMessage }}
+      </div>
+
+      <div class="alert alert-warning" *ngIf="uploadBlockedBySpecialty">
+        L'import et l'analyse d'images scanner/IRM sont désactivés pour votre profil.
+      </div>
+      
+      <!-- ÉTAPE 1: Sélection du modèle IA (affichée si aucun modèle sélectionné) -->
+      <div class="model-selection-step" *ngIf="!selectedAIModel && !uploadBlockedBySpecialty">
+        <div class="step-header">
+          <span class="step-badge">Étape 1/2</span>
+          <h3>Choisissez le type d'analyse</h3>
+        </div>
+        <p class="step-description">Sélectionnez le modèle d'IA adapté à l'organe que vous souhaitez analyser</p>
+        
+        <div class="ai-models-grid">
+          <div class="ai-model-card" *ngFor="let model of aiModels" (click)="selectAIModel(model)">
+            <div class="model-icon" [style.background-color]="model.color + '20'">
+              <span [style.color]="model.color">{{ model.icon }}</span>
+            </div>
+            <h4>{{ model.name }}</h4>
+            <p>{{ model.description }}</p>
+            <span class="model-organ">{{ model.organ }}</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ÉTAPE 2: Import de l'image avec validation (affichée si un modèle est sélectionné) -->
+      <div class="image-upload-step" *ngIf="selectedAIModel && !uploadBlockedBySpecialty">
+        <div class="step-header">
+          <button type="button" class="btn btn-back" (click)="backToModelSelection()" *ngIf="canChangeModel && aiModels.length > 1">
+            <i class="bi bi-arrow-left"></i> Changer de modèle
+          </button>
+          <div class="selected-model-info">
+            <span class="model-badge" [style.background-color]="selectedAIModel.color + '20'" [style.color]="selectedAIModel.color">
+              {{ selectedAIModel.icon }} {{ selectedAIModel.name }}
+            </span>
+          </div>
+        </div>
+        
+        <p class="step-description">Étape 2 : Importez une image de <strong>{{ selectedAIModel.organ }}</strong> pour analyse</p>
+
+        <!-- Zone d'import -->
+        <div class="irm-upload-zone" *ngIf="!selectedIRMImage">
+          <input type="file" #irmFileInput accept="image/*,.dcm" (change)="onIRMFileSelected($event)" style="display: none;">
+          <div class="upload-placeholder" (click)="irmFileInput.click()">
+            <div class="upload-icon">{{ selectedAIModel.icon }}</div>
+            <h4>Importer une image de {{ selectedAIModel.organ }}</h4>
+            <p>Cliquez ou glissez-déposez l'image ici</p>
+            <span class="file-types">Formats acceptés : JPG, PNG, DICOM</span>
+          </div>
+        </div>
+
+        <!-- Validation en cours -->
+        <div class="validation-loading" *ngIf="validatingImage">
+          <div class="spinner"></div>
+          <p>Validation de l'organe en cours...</p>
+          <p class="validation-hint" *ngIf="isAlzheimerSelected">
+            Validation IRM cérébrale — algorithme 7 points (vision par ordinateur)
+          </p>
+          <p class="validation-hint" *ngIf="selectedAIModel.organ === 'cerveau' && !isAlzheimerSelected">
+            Vérification IRM cérébrale (axiale T1/T2, niveaux de gris, fond sombre)
+          </p>
+          <p class="validation-hint" *ngIf="selectedAIModel.organ !== 'cerveau'">
+            Vérification que l'image correspond à un {{ selectedAIModel.organ }} (forme et géométrie)
+          </p>
+        </div>
+
+        <!-- Image sélectionnée avec résultat de validation -->
+        <div class="irm-preview" *ngIf="selectedIRMImage && !irmAnalysisResult && !validatingImage">
+          <div class="preview-header">
+            <h4>Image importée</h4>
+            <button type="button" class="btn-remove" (click)="chooseAnotherImage()">Supprimer</button>
+          </div>
+          
+          <div class="preview-content">
+            <img [src]="selectedIRMImage" alt="IRM Preview" class="irm-image">
+            
+            <!-- Validation réussie -->
+            <div class="validation-result success" *ngIf="imageValidationAccepted">
+              <i class="bi bi-check-circle-fill"></i>
+              <div class="validation-info">
+                <p class="validation-title">Image validée</p>
+                <p class="validation-detail">
+                  Organe détecté : {{ imageValidationResult?.organ_name || selectedAIModel.organ }}
+                  (confiance : {{ imageValidationResult?.confidence | number:'1.0-0' }}%)
+                </p>
+                <p class="validation-detail" *ngIf="imageValidationResult?.score != null && imageValidationResult?.total_checks">
+                  Algorithme 7 points : {{ imageValidationResult?.score }}/{{ imageValidationResult?.total_checks }} critères validés
+                </p>
+                <div class="criteria-tags" *ngIf="imageValidationResult?.criteria_tags?.length">
+                  <span class="criteria-tag"
+                        *ngFor="let tag of imageValidationResult?.criteria_tags"
+                        [class.pass]="tag.startsWith('✓')"
+                        [class.fail]="tag.startsWith('✗')"
+                        [title]="tag">
+                    {{ formatCriteriaTag(tag) }}
+                  </span>
+                </div>
+                <p class="validation-hint">{{ imageValidationResult?.message || ('L\'image correspond au modèle « ' + selectedAIModel.name + ' ».') }}</p>
+              </div>
+            </div>
+
+            <!-- Validation échouée -->
+            <div class="validation-result error" *ngIf="imageValidationBlocked && imageValidationError">
+              <i class="bi bi-x-circle-fill"></i>
+              <div class="validation-info">
+                <p class="validation-title">Image rejetée</p>
+                <p class="validation-error">{{ imageValidationError }}</p>
+                <p class="validation-detail" *ngIf="imageValidationResult?.score != null && imageValidationResult?.total_checks">
+                  Algorithme 7 points : {{ imageValidationResult?.score }}/{{ imageValidationResult?.total_checks }} critères validés
+                </p>
+                <div class="criteria-tags" *ngIf="imageValidationResult?.criteria_tags?.length">
+                  <span class="criteria-tag"
+                        *ngFor="let tag of imageValidationResult?.criteria_tags"
+                        [class.pass]="tag.startsWith('✓')"
+                        [class.fail]="tag.startsWith('✗')"
+                        [title]="tag">
+                    {{ formatCriteriaTag(tag) }}
+                  </span>
+                </div>
+                <p class="validation-hint" *ngIf="imageValidationResult?.expected_organ_name">
+                  Organe attendu : {{ imageValidationResult?.expected_organ_name }}
+                  <span *ngIf="imageValidationResult?.organ_name && imageValidationResult?.organ !== 'unknown'">
+                    — détecté : {{ imageValidationResult?.organ_name }}
+                    ({{ imageValidationResult?.confidence | number:'1.0-0' }}%)
+                  </span>
+                </p>
+                <div class="validation-actions">
+                  <button type="button" class="btn btn-secondary" (click)="chooseAnotherImage()">
+                    Choisir une autre image
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+          
+          <!-- Actions après validation réussie uniquement -->
+          <div class="preview-actions" *ngIf="imageValidationAccepted">
+            <button type="button" class="btn btn-primary btn-analyze" (click)="analyzeIRMImage()" [disabled]="!canAnalyzeImage || analyzingIRM">
+              <span *ngIf="!analyzingIRM">Lancer l'analyse IA</span>
+              <span *ngIf="analyzingIRM">
+                <span class="spinner"></span>
+                Analyse en cours...
+              </span>
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Résultat de l'analyse -->
+      <div class="irm-analysis-result" *ngIf="irmAnalysisResult" [class.alzheimer-result]="isAlzheimerSelected">
+        <div class="result-header" [class.result-header--alz]="isAlzheimerSelected">
+          <div>
+            <h4>{{ isAlzheimerSelected ? 'Rapport clinique IA' : 'Résultat de l\'analyse IA' }}</h4>
+            <p class="result-subtitle" *ngIf="isAlzheimerSelected">SipDetect v6 · Classification Alzheimer · IRM cérébrale</p>
+          </div>
+          <span class="confidence-badge" *ngIf="!isAlzheimerSelected"
+                [class.high]="irmAnalysisResult.confidence > 80"
+                [class.medium]="irmAnalysisResult.confidence >= 50 && irmAnalysisResult.confidence <= 80"
+                [class.low]="irmAnalysisResult.confidence < 50">
+            Confiance : {{ irmAnalysisResult.confidence }}%
+          </span>
+          <div class="az-reliability-badge" *ngIf="isAlzheimerSelected && getAlzheimerReliability() as rel"
+               [class.az-reliability-badge--high]="rel.level === 'high'"
+               [class.az-reliability-badge--moderate]="rel.level === 'moderate'"
+               [class.az-reliability-badge--low]="rel.level === 'low'">
+            <span class="az-reliability-badge__dot"></span>
+            Fiabilité : {{ rel.label }}
+          </div>
+        </div>
+
+        <div class="result-content">
+          <!-- === Rapport Alzheimer — design clinique === -->
+          <ng-container *ngIf="isAlzheimerSelected">
+            <div class="az-report">
+
+              <!-- Verdict principal -->
+              <div class="az-hero" [class.az-hero--normal]="irmAnalysisResult.isNormal" [class.az-hero--alert]="!irmAnalysisResult.isNormal">
+                <div class="az-hero__badge">{{ irmAnalysisResult.stageLabel }}</div>
+                <div class="az-hero__content">
+                  <span class="az-hero__eyebrow">Stade prédit par SipDetect v6</span>
+                  <h5 class="az-hero__title">{{ getAlzheimerStageInfo(irmAnalysisResult.stageLabel!)?.title || irmAnalysisResult.stageName }}</h5>
+                  <p class="az-hero__desc">{{ getAlzheimerStageInfo(irmAnalysisResult.stageLabel!)?.meaning }}</p>
+                </div>
+                <div class="az-hero__stats" *ngIf="getAlzheimerReliability() as rel">
+                  <div class="az-stat az-stat--primary">
+                    <span class="az-stat__value">{{ irmAnalysisResult.confidence }}%</span>
+                    <span class="az-stat__label">Confiance IRM</span>
+                  </div>
+                  <div class="az-stat az-stat--reliability"
+                       [class.az-stat--reliability-high]="rel.level === 'high'"
+                       [class.az-stat--reliability-moderate]="rel.level === 'moderate'"
+                       [class.az-stat--reliability-low]="rel.level === 'low'">
+                    <span class="az-stat__value">{{ rel.score }}</span>
+                    <span class="az-stat__label">Fiabilité · {{ rel.label }}</span>
+                  </div>
+                </div>
+              </div>
+
+              <p class="az-metric-note">
+                La <strong>confiance</strong> est la probabilité que <em>cette IRM</em> appartienne au stade prédit ({{ irmAnalysisResult.stageLabel }}).
+                Ce n'est pas une mesure de qualité de l'image ni un diagnostic clinique définitif.
+              </p>
+
+              <!-- Indicateur de fiabilité composite -->
+              <section class="az-reliability" *ngIf="getAlzheimerReliability() as rel"
+                       [class.az-reliability--high]="rel.level === 'high'"
+                       [class.az-reliability--moderate]="rel.level === 'moderate'"
+                       [class.az-reliability--low]="rel.level === 'low'">
+                <header class="az-reliability__head">
+                  <div>
+                    <h5>Fiabilité de l'analyse</h5>
+                    <p>{{ rel.summary }}</p>
+                  </div>
+                  <div class="az-reliability__score">
+                    <span class="az-reliability__level">{{ rel.label }}</span>
+                    <span class="az-reliability__value">{{ rel.score }}/100</span>
+                  </div>
+                </header>
+                <div class="az-reliability__factors">
+                  <div class="az-reliability__factor" *ngFor="let factor of rel.factors"
+                       [class.az-reliability__factor--good]="factor.status === 'good'"
+                       [class.az-reliability__factor--ok]="factor.status === 'ok'"
+                       [class.az-reliability__factor--weak]="factor.status === 'weak'">
+                    <div class="az-reliability__factor-top">
+                      <span class="az-reliability__factor-label">{{ factor.label }}</span>
+                      <span class="az-reliability__factor-pts">{{ factor.score }}/{{ factor.maxScore }}</span>
+                    </div>
+                    <div class="az-reliability__factor-track">
+                      <div class="az-reliability__factor-fill"
+                           [style.width.%]="(factor.score / factor.maxScore) * 100"></div>
+                    </div>
+                    <span class="az-reliability__factor-detail">{{ factor.detail }}</span>
+                  </div>
+                </div>
+                <p class="az-reliability__advice">{{ rel.advice }}</p>
+              </section>
+
+              <!-- Recommandation clinique -->
+              <div class="az-callout" [class.az-callout--ok]="irmAnalysisResult.isNormal" [class.az-callout--warn]="!irmAnalysisResult.isNormal">
+                <div class="az-callout__icon">{{ irmAnalysisResult.isNormal ? '✓' : '!' }}</div>
+                <div>
+                  <p class="az-callout__lead">{{ irmAnalysisResult.diagnosis }}</p>
+                  <p class="az-callout__sub" *ngIf="!irmAnalysisResult.isNormal">Anomalies détectées — avis neurologique recommandé.</p>
+                  <p class="az-callout__sub" *ngIf="irmAnalysisResult.isNormal">Profil compatible avec une cognition normale (Non Demented).</p>
+                </div>
+              </div>
+
+              <div class="az-body">
+                <!-- Distribution probabiliste -->
+                <section class="az-panel" *ngIf="irmAnalysisResult.probabilities">
+                  <header class="az-panel__head">
+                    <h5>Distribution probabiliste</h5>
+                    <span class="az-panel__hint">Probabilité par stade OASIS</span>
+                  </header>
+                  <div class="az-prob-list">
+                    <div class="az-prob-row" *ngFor="let item of getOrderedProbabilities()"
+                         [class.az-prob-row--active]="isPredictedStage(item.code)">
+                      <div class="az-prob-row__top">
+                        <span class="az-prob-row__code">{{ item.code }}</span>
+                        <span class="az-prob-row__name">{{ item.info.title }}</span>
+                        <span class="az-prob-row__pct">{{ item.value | number:'1.1-1' }}%</span>
+                      </div>
+                      <div class="az-prob-row__track">
+                        <div class="az-prob-row__fill" [style.width.%]="item.value"></div>
+                      </div>
+                      <p class="az-prob-row__meaning">{{ item.info.meaning }}</p>
+                    </div>
+                  </div>
+                </section>
+
+                <!-- Référence des stades -->
+                <section class="az-panel az-panel--ref">
+                  <header class="az-panel__head">
+                    <h5>Référentiel des stades</h5>
+                    <span class="az-panel__hint">Classification OASIS / SipDetect</span>
+                  </header>
+                  <div class="az-ref-list">
+                    <div class="az-ref-item" *ngFor="let stage of alzheimerStages"
+                         [class.az-ref-item--active]="isPredictedStage(stage.code)">
+                      <span class="az-ref-item__code">{{ stage.code }}</span>
+                      <div class="az-ref-item__body">
+                        <strong>{{ stage.title }}</strong>
+                        <p>{{ stage.meaning }}</p>
+                        <small>{{ stage.clinical }}</small>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+              </div>
+
+              <!-- Zones + Grad-CAM -->
+              <div class="az-imaging" *ngIf="irmAnalysisResult.detections?.length || irmAnalysisResult.gradcamImageBase64">
+                <section class="az-panel" *ngIf="irmAnalysisResult.detections?.length">
+                  <header class="az-panel__head">
+                    <h5>Zones d'activation</h5>
+                    <span class="az-panel__hint">Analyse Grad-CAM</span>
+                  </header>
+                  <div class="az-zone-list">
+                    <div class="az-zone-item" *ngFor="let detection of irmAnalysisResult.detections">
+                      <div class="az-zone-item__icon" [class.az-zone-item__icon--high]="detection.severity === 'high'">
+                        <svg viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 15h2v2h-2v-2zm0-10h2v8h-2V7z"/></svg>
+                      </div>
+                      <div class="az-zone-item__info">
+                        <strong>{{ detection.type }}</strong>
+                        <span>{{ detection.location }}</span>
+                      </div>
+                      <div class="az-zone-item__metric">
+                        <span class="az-zone-item__pct">{{ detection.confidence }}%</span>
+                        <span class="az-zone-item__tag" [class.az-zone-item__tag--high]="detection.severity === 'high'">
+                          {{ detection.severity === 'high' ? 'Élevée' : 'Modérée' }}
+                        </span>
+                      </div>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="az-panel az-panel--gradcam" *ngIf="irmAnalysisResult.gradcamImageBase64">
+                  <header class="az-panel__head">
+                    <h5>Carte Grad-CAM</h5>
+                    <span class="az-panel__hint">Zones influençant la décision</span>
+                  </header>
+                  <div class="az-gradcam-legend">
+                    <span><i class="dot dot--low"></i> Faible</span>
+                    <span><i class="dot dot--mid"></i> Modérée</span>
+                    <span><i class="dot dot--high"></i> Forte</span>
+                  </div>
+                  <div class="az-gradcam-frame">
+                    <img [src]="irmAnalysisResult.gradcamImageBase64" alt="Grad-CAM Alzheimer">
+                  </div>
+                </section>
+              </div>
+
+            </div>
+          </ng-container>
+
+          <!-- === Résultat générique (poumon, etc.) === -->
+          <ng-container *ngIf="!isAlzheimerSelected">
+            <div class="stage-badge" *ngIf="irmAnalysisResult.stageLabel">
+              <span class="stage-code">{{ irmAnalysisResult.stageLabel }}</span>
+              <span class="stage-name">{{ irmAnalysisResult.stageName }}</span>
+            </div>
+            <div class="diagnosis-main" [class.normal]="irmAnalysisResult.isNormal" [class.abnormal]="!irmAnalysisResult.isNormal">
+              <div class="diagnosis-icon">{{ irmAnalysisResult.isNormal ? '✅' : '⚠️' }}</div>
+              <div class="diagnosis-text">
+                <h5>{{ irmAnalysisResult.diagnosis }}</h5>
+                <p *ngIf="irmAnalysisResult.isNormal">Aucune anomalie détectée</p>
+                <p *ngIf="!irmAnalysisResult.isNormal">Anomalies détectées — consultation recommandée</p>
+              </div>
+            </div>
+            <div class="detections-list" *ngIf="irmAnalysisResult.detections?.length">
+              <h5>Zones détectées</h5>
+              <div class="detection-item" *ngFor="let detection of irmAnalysisResult.detections">
+                <span class="detection-type" [class]="detection.severity">{{ detection.type }}</span>
+                <span class="detection-location">{{ detection.location }}</span>
+                <span class="detection-confidence">{{ detection.confidence }}%</span>
+              </div>
+            </div>
+            <div class="gradcam-section" *ngIf="irmAnalysisResult.gradcamImageBase64">
+              <h5>Localisation Grad-CAM</h5>
+              <img [src]="irmAnalysisResult.gradcamImageBase64" alt="Grad-CAM" class="gradcam-image">
+            </div>
+          </ng-container>
+
+          <!-- Recommandations IA -->
+          <div class="ai-recommendations" *ngIf="irmAnalysisResult.recommendations">
+            <h5>💡 Recommandations :</h5>
+            <p>{{ irmAnalysisResult.recommendations }}</p>
+          </div>
+
+          <!-- Actions sur le résultat -->
+          <div class="result-actions">
+            <button type="button" class="btn btn-secondary" (click)="clearIRMImage()">
+              🔄 Nouvelle analyse
+            </button>
+            <button type="button" class="btn btn-primary" (click)="addIRMToClinicalNotes()">
+              📝 Ajouter aux notes cliniques
+            </button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Section 6: Notes et recommandations -->
+    <div class="form-section">
+      <h2>📝 Notes et recommandations</h2>
+
+      <div class="form-group">
+        <label for="clinicalNotes">Notes cliniques</label>
+        <textarea id="clinicalNotes" formControlName="clinicalNotes" class="form-control" rows="4"
+                  placeholder="Observations cliniques détaillées..."></textarea>
+      </div>
+
+      <div class="form-group">
+        <label for="recommendations">Recommandations</label>
+        <textarea id="recommendations" formControlName="recommendations" class="form-control" rows="3"
+                  placeholder="Recommandations pour le patient (hygiène de vie, alimentation, repos...)"></textarea>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group checkbox-group">
+          <label>
+            <input type="checkbox" formControlName="followUpRequired">
+            Suivi requis
+          </label>
+        </div>
+
+        <div class="form-group" *ngIf="recordForm.get('followUpRequired')?.value">
+          <label for="followUpDate">Date du prochain rendez-vous</label>
+          <input type="date" id="followUpDate" formControlName="followUpDate" class="form-control">
+        </div>
+      </div>
+    </div>
+
+    <!-- Boutons de soumission -->
+    <div class="form-actions">
+      <button type="submit" class="btn btn-primary" [disabled]="saving">
+        <span *ngIf="saving">Enregistrement...</span>
+        <span *ngIf="!saving && !patientId">💾 Enregistrer le dossier</span>
+        <span *ngIf="!saving && patientId">💾 Mettre à jour le dossier</span>
+      </button>
+      <button type="button" class="btn btn-secondary" (click)="cancel()">
+        Annuler
+      </button>
+    </div>
+  </form>
+</div>

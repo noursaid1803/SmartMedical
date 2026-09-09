@@ -1,0 +1,113 @@
+{
+  "model_name": "SipDetect CNN+GAT+PH Optimisé",
+  "version": "v6-optimized-final",
+  "sprint": 2,
+  "date": "2026-05-26",
+  "architecture": {
+    "backbone": "EfficientNet-B3",
+    "backbone_weights": "ImageNet + Fine-tuning Sprint1",
+    "fine_tuned_blocks": [
+      "features.6",
+      "features.7",
+      "features.8"
+    ],
+    "gnn": "GATv2Conv",
+    "gnn_layers": 3,
+    "gnn_heads": 4,
+    "gnn_hidden": 256,
+    "gnn_out": 128,
+    "node_features": 1550,
+    "edge_features": 1,
+    "fusion_dim": 1792,
+    "tda": "PersistentHomology-gudhi-H0+H1",
+    "ph_features": 12,
+    "ph_channels": 8
+  },
+  "preprocessing": {
+    "input_size": [
+      300,
+      300
+    ],
+    "n_segments": 100,
+    "k_nn": 7,
+    "normalize_mean": [
+      0.485,
+      0.456,
+      0.406
+    ],
+    "normalize_std": [
+      0.229,
+      0.224,
+      0.225
+    ]
+  },
+  "training": {
+    "loss": "FocalLoss",
+    "focal_gamma": 2.5,
+    "optimizer": "AdamW",
+    "lr_cnn": 1e-05,
+    "lr_gat": 0.0003,
+    "scheduler": "CosineAnnealingWarmRestarts",
+    "epochs": 30,
+    "batch_size": 32,
+    "augmentation": [
+      "Mixup-0.3",
+      "CutMix-1.0",
+      "Flip",
+      "Rotation",
+      "ColorJitter"
+    ],
+    "sampler": "WeightedRandomSampler",
+    "temperature": 1.343
+  },
+  "dataset": {
+    "name": "AugmentedAlzheimerDataset",
+    "source": "uraninjo/Kaggle",
+    "split": "70/15/15 stratifié par patient",
+    "train": 23788,
+    "val": 5098,
+    "test": 5098
+  },
+  "classes": {
+    "0": "Non Demented (CN)",
+    "1": "Very Mild (MCI)",
+    "2": "Mild (EMCI)",
+    "3": "Moderate (AD)"
+  },
+  "metrics_test": {
+    "F1_macro": 0.9126,
+    "AUC": 0.9869,
+    "QWK": 0.9461,
+    "Accuracy": 0.9047,
+    "F1_per_class": {
+      "Non Demented": 0.8682,
+      "Very Mild": 0.8518,
+      "Mild": 0.932,
+      "Moderate": 0.9985
+    },
+    "QWK_per_class": {
+      "Non Demented": 0.8224,
+      "Very Mild": 0.7915,
+      "Mild": 0.9083,
+      "Moderate": 0.9981
+    }
+  },
+  "sota_comparison": {
+    "Zhang_2022_GraphSAGE": {
+      "F1": 0.841,
+      "AUC": 0.897
+    },
+    "SipDetect_v6": {
+      "F1": 0.9126,
+      "AUC": 0.9869
+    },
+    "gain_F1": "+7.1pts",
+    "gain_AUC": "+8.9pts"
+  },
+  "inference": {
+    "latency_target_ms": 500,
+    "endpoint": "POST /predict",
+    "input_format": "multipart/form-data",
+    "output_format": "JSON"
+  }
+}

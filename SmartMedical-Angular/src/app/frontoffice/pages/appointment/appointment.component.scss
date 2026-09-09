@@ -1,0 +1,44 @@
+.apt-hero {
+  background: linear-gradient(135deg, #0284c7 0%, #0ea5e9 50%, #14b8a6 100%);
+  color: white;
+  padding: 3.5rem 0;
+
+  h1 {
+    font-size: 2.25rem;
+    font-weight: 700;
+    margin: 0.5rem 0;
+  }
+
+  p {
+    opacity: 0.9;
+    margin: 0;
+    max-width: 520px;
+  }
+}
+
+.apt-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  background: rgba(255, 255, 255, 0.2);
+  padding: 0.35rem 0.85rem;
+  border-radius: 999px;
+  font-size: 0.85rem;
+}
+
+.appointment-section {
+  background: #f8fafc;
+  padding: 3rem 0;
+}
+
+.card {
+  border-radius: 16px !important;
+  border: 1px solid #e2e8f0 !important;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #0ea5e9, #0284c7) !important;
+  border: none !important;
+  border-radius: 10px;
+  padding: 0.75rem 1.5rem;
+}

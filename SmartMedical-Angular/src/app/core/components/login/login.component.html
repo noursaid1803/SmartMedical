@@ -1,0 +1,63 @@
+<div class="login-page">
+  <div class="login-visual">
+    <div class="visual-content">
+      <div class="brand-mark">
+        <i class="bi bi-heart-pulse-fill"></i>
+      </div>
+      <h1>SmartMedical</h1>
+      <p>Plateforme médicale intelligente — gestion des patients, analyses IRM par IA et suivi personnalisé.</p>
+      <ul class="feature-list">
+        <li><i class="bi bi-shield-check"></i> Accès sécurisé par rôle</li>
+        <li><i class="bi bi-robot"></i> Assistant IA pour les patients</li>
+        <li><i class="bi bi-image"></i> Validation IRM par spécialité</li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="login-panel">
+    <div class="login-card">
+      <div class="login-card-header">
+        <h2>Connexion</h2>
+        <p>Accédez à votre espace administrateur, médecin ou patient</p>
+      </div>
+
+      <form [formGroup]="loginForm" (ngSubmit)="onSubmit()" class="login-form">
+        <div class="form-group-medical">
+          <label for="email">Adresse email</label>
+          <div class="input-wrap">
+            <i class="bi bi-envelope"></i>
+            <input type="email" id="email" formControlName="email" placeholder="votre@email.com" />
+          </div>
+          <small class="field-error" *ngIf="loginForm.get('email')?.invalid && loginForm.get('email')?.touched">Email invalide</small>
+        </div>
+
+        <div class="form-group-medical">
+          <label for="password">Mot de passe</label>
+          <div class="input-wrap">
+            <i class="bi bi-lock"></i>
+            <input [type]="showPassword ? 'text' : 'password'" id="password" formControlName="password" placeholder="••••••••" />
+            <button type="button" class="toggle-pwd" (click)="togglePasswordVisibility()" aria-label="Afficher le mot de passe">
+              <i class="bi" [class.bi-eye]="!showPassword" [class.bi-eye-slash]="showPassword"></i>
+            </button>
+          </div>
+          <small class="field-error" *ngIf="loginForm.get('password')?.invalid && loginForm.get('password')?.touched">Mot de passe requis (min. 6 caractères)</small>
+          <div class="forgot-link">
+            <a routerLink="/forgot-password">Mot de passe oublié ?</a>
+          </div>
+        </div>
+
+        <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+        <button type="submit" class="btn-login" [disabled]="loginForm.invalid || isLoading">
+          <span *ngIf="isLoading" class="spinner-border spinner-border-sm me-2"></span>
+          {{ isLoading ? 'Connexion en cours…' : 'Se connecter' }}
+        </button>
+      </form>
+
+      <div class="login-footer">
+        <p>Pas encore de compte ? <a routerLink="/register">Créer un compte patient</a></p>
+        <a routerLink="/frontoffice" class="guest-link">Continuer sans connexion</a>
+      </div>
+    </div>
+  </div>
+</div>

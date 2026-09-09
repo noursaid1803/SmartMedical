@@ -1,0 +1,53 @@
+.verify-code-container {
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  min-height: 100vh;
+
+  .card {
+    border: none;
+    border-radius: 15px;
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    border-radius: 25px;
+    padding: 12px;
+
+    &:hover:not(:disabled) {
+      opacity: 0.9;
+    }
+
+    &:disabled {
+      opacity: 0.6;
+    }
+  }
+
+  .btn-outline-secondary {
+    border-radius: 25px;
+    padding: 12px;
+
+    &:hover {
+      background-color: #f8f9fa;
+    }
+  }
+
+  .form-control {
+    border-radius: 10px;
+    padding: 12px;
+    letter-spacing: 8px;
+
+    &:focus {
+      border-color: #667eea;
+      box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+    }
+  }
+
+  .timer {
+    font-size: 1rem;
+    color: #6c757d;
+
+    .text-danger {
+      font-weight: bold;
+    }
+  }
+}

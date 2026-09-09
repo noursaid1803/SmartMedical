@@ -1,0 +1,70 @@
+<header class="doctor-header">
+  <div class="header-left">
+    <button class="btn-toggle" (click)="onToggleSidebar()">
+      <i class="bi bi-list"></i>
+    </button>
+    
+    <div class="breadcrumb">
+      <span class="current-date">
+        <i class="bi bi-calendar3"></i>
+        {{ currentDate | date:'EEEE d MMMM yyyy' }}
+      </span>
+    </div>
+  </div>
+
+  <div class="header-right">
+    <!-- Search -->
+    <div class="header-search">
+      <i class="bi bi-search"></i>
+      <input type="text" placeholder="Rechercher un patient, dossier...">
+    </div>
+
+    <!-- Notifications -->
+    <div class="notifications-dropdown">
+      <button class="btn-notifications" (click)="toggleNotifications()">
+        <i class="bi bi-bell"></i>
+        <span class="badge" *ngIf="unreadCount > 0">{{ unreadCount }}</span>
+      </button>
+      
+      <div class="notifications-panel" *ngIf="showNotifications">
+        <div class="notifications-header">
+          <h4>Notifications</h4>
+          <button class="btn-mark-read">Tout marquer comme lu</button>
+        </div>
+        <div class="notifications-list">
+          <div class="notification-item" *ngFor="let notif of notifications" [class]="'notification-' + notif.type">
+            <div class="notification-icon">
+              <i [class]="'bi bi-' + (notif.type === 'success' ? 'check-circle' : notif.type === 'warning' ? 'exclamation-triangle' : 'info-circle')"></i>
+            </div>
+            <div class="notification-content">
+              <p>{{ notif.message }}</p>
+              <span class="notification-time">{{ notif.time }}</span>
+            </div>
+          </div>
+        </div>
+        <div class="notifications-footer">
+          <a routerLink="/doctor/notifications">Voir toutes les notifications</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- User Menu -->
+    <div class="user-menu">
+      <button class="btn-user" routerLink="/profile">
+        <div class="user-avatar">
+          <i class="bi bi-person-circle"></i>
+        </div>
+        <div class="user-info" *ngIf="doctorName">
+          <span class="user-name">{{ doctorName }}</span>
+          <span class="user-role">Médecin</span>
+        </div>
+        <i class="bi bi-chevron-down"></i>
+      </button>
+    </div>
+
+    <!-- Logout -->
+    <button class="btn-logout" (click)="logout()" title="Déconnexion">
+      <i class="bi bi-box-arrow-right"></i>
+    </button>
+  </div>
+</header>

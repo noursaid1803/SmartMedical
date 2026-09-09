@@ -1,0 +1,26 @@
+# SipDetect MS-2 — Requirements
+# FastAPI microservice
+
+# API
+fastapi==0.115.0
+uvicorn==0.30.0
+python-multipart==0.0.9
+pydantic==2.8.0
+
+# Deep Learning
+torch==2.6.0
+torchvision==0.21.0
+torch-geometric==2.6.1
+
+# Graph + TDA
+scikit-image==0.24.0
+scikit-learn==1.5.0
+gudhi==3.10.1
+
+# Vision + Utils
+numpy==1.26.4
+Pillow==10.4.0
+pytorch-grad-cam==1.5.4
+
+# Cache
+redis==5.0.8

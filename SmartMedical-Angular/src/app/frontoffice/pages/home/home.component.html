@@ -1,0 +1,315 @@
+<!-- Hero Section Moderne et Élégant -->
+<section class="hero-section">
+  <div class="hero-bg">
+    <img [src]="images.heroBg" alt="Medical background" class="hero-image">
+    <div class="hero-overlay"></div>
+    <div class="hero-pattern"></div>
+  </div>
+  
+  <div class="container hero-content">
+    <div class="row align-items-center min-vh-80">
+      <div class="col-lg-7 hero-text">
+        <div class="badge badge-hero mb-3">
+          <i class="bi bi-shield-check me-2"></i>
+          Santé digitale de confiance
+        </div>
+        
+        <h1 class="hero-title">
+          Votre santé,
+          <span class="gradient-text">notre priorité</span>
+        </h1>
+        
+        <p class="hero-description">
+          SmartMedical révolutionne votre expérience de santé avec des solutions médicales 
+          innovantes. Prenez rendez-vous en ligne, accédez à vos résultats en temps réel 
+          et communiquez avec vos médecins en toute simplicité.
+        </p>
+        
+        <div class="hero-buttons">
+          <a routerLink="/frontoffice/appointment" class="btn btn-primary btn-hero">
+            <i class="bi bi-calendar-check me-2"></i>
+            Prendre rendez-vous
+          </a>
+          <a routerLink="/frontoffice/services" class="btn btn-outline-hero">
+            <i class="bi bi-play-circle me-2"></i>
+            Découvrir nos services
+          </a>
+        </div>
+        
+        <!-- Stats rapides -->
+        <div class="hero-stats">
+          <div class="stat-item">
+            <span class="stat-number">15K+</span>
+            <span class="stat-label">Patients satisfaits</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">50+</span>
+            <span class="stat-label">Médecins experts</span>
+          </div>
+          <div class="stat-divider"></div>
+          <div class="stat-item">
+            <span class="stat-number">4.9</span>
+            <span class="stat-label">Note moyenne</span>
+          </div>
+        </div>
+      </div>
+      
+      <div class="col-lg-5 d-none d-lg-block">
+        <div class="hero-image-float">
+          <div class="floating-card card-1">
+            <i class="bi bi-heart-pulse"></i>
+            <span>Cardiologie</span>
+          </div>
+          <div class="floating-card card-2">
+            <i class="bi bi-shield-check"></i>
+            <span>Certifié</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+  
+  <!-- Scroll indicator -->
+  <div class="scroll-indicator">
+    <div class="mouse">
+      <div class="wheel"></div>
+    </div>
+    <span>Scroll</span>
+  </div>
+</section>
+
+<!-- Services Section Moderne -->
+<section class="services-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-badge">Nos Spécialités</span>
+      <h2 class="section-title">Services médicaux d'excellence</h2>
+      <p class="section-subtitle">Des soins personnalisés par des experts dans chaque domaine</p>
+    </div>
+    
+    <div class="services-grid">
+      <div class="service-card" *ngFor="let service of services; let i = index" [style.animation-delay]="i * 0.1 + 's'">
+        <div class="service-icon">
+          <i [class]="'bi ' + service.icon"></i>
+          <div class="icon-bg"></div>
+        </div>
+        <h3 class="service-title">{{ service.title }}</h3>
+        <p class="service-description">{{ service.description }}</p>
+        <a href="#" class="service-link">
+          En savoir plus <i class="bi bi-arrow-right"></i>
+        </a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- About Section Moderne -->
+<section class="about-section">
+  <div class="container">
+    <div class="row align-items-center">
+      <div class="col-lg-6 mb-4 mb-lg-0">
+        <div class="about-image-wrapper">
+          <div class="image-main">
+            <img [src]="images.about" alt="Notre clinique">
+            <div class="image-decoration"></div>
+          </div>
+          <div class="experience-badge">
+            <div class="badge-content">
+              <span class="badge-number">15+</span>
+              <span class="badge-text">Années d'expérience</span>
+            </div>
+          </div>
+          <div class="floating-stat stat-1">
+            <i class="bi bi-award"></i>
+            <span>Certifié ISO</span>
+          </div>
+        </div>
+      </div>
+      <div class="col-lg-6">
+        <div class="about-content">
+          <span class="section-label">À propos de nous</span>
+          <h2 class="about-title">Des soins médicaux de qualité pour tous</h2>
+          <p class="about-description">
+            SmartMedical est une clinique moderne équipée des dernières technologies médicales. 
+            Notre équipe de médecins spécialistes et de soignants qualifiés s'engage à vous offrir 
+            des soins personnalisés dans un environnement accueillant et rassurant.
+          </p>
+          
+          <div class="features-list">
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Équipement médical de pointe</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Médecins spécialistes reconnus</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Service d'urgence 24h/24</span>
+            </div>
+            <div class="feature-item">
+              <div class="feature-icon">
+                <i class="bi bi-check-circle-fill"></i>
+              </div>
+              <span>Rendez-vous en ligne simplifiés</span>
+            </div>
+          </div>
+          
+          <a routerLink="/frontoffice/about" class="btn btn-about">
+            <span>En savoir plus</span>
+            <i class="bi bi-arrow-right"></i>
+          </a>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Stats Section Moderne avec Glassmorphism -->
+<section class="stats-section">
+  <div class="stats-bg"></div>
+  <div class="container">
+    <div class="stats-grid">
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-person-heart"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="50">50+</h3>
+          <p class="stat-label">Médecins spécialistes</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-people-fill"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="10000">10K+</h3>
+          <p class="stat-label">Patients satisfaits</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-calendar-check"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number" data-target="15">15+</h3>
+          <p class="stat-label">Années d'expérience</p>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon">
+          <i class="bi bi-headset"></i>
+        </div>
+        <div class="stat-content">
+          <h3 class="stat-number">24/7</h3>
+          <p class="stat-label">Support disponible</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Testimonials Section Moderne -->
+<section class="testimonials-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-badge">Témoignages</span>
+      <h2 class="section-title">Ce que disent nos patients</h2>
+      <p class="section-subtitle">Des histoires réelles de patients satisfaits</p>
+    </div>
+    
+    <div class="testimonials-grid">
+      <div class="testimonial-card" *ngFor="let testimonial of testimonials; let i = index" [class.featured]="i === 0">
+        <div class="testimonial-header">
+          <img [src]="testimonial.image" [alt]="testimonial.name" class="testimonial-avatar">
+          <div class="testimonial-info">
+            <h4 class="testimonial-name">{{ testimonial.name }}</h4>
+            <span class="testimonial-role">{{ testimonial.role }}</span>
+          </div>
+          <div class="testimonial-rating">
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+            <i class="bi bi-star-fill"></i>
+          </div>
+        </div>
+        <div class="testimonial-content">
+          <i class="bi bi-quote-left quote-icon"></i>
+          <p>{{ testimonial.text }}</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- Gallery Section Moderne -->
+<section class="gallery-section">
+  <div class="container">
+    <div class="section-header text-center">
+      <span class="section-badge">Galerie</span>
+      <h2 class="section-title">Notre clinique en images</h2>
+      <p class="section-subtitle">Découvrez nos installations de pointe</p>
+    </div>
+    
+    <div class="gallery-grid">
+      <div class="gallery-item" *ngFor="let image of gallery; let i = index" [class.large]="i === 0 || i === 3">
+        <img [src]="image" [alt]="'Image clinique ' + (i + 1)">
+        <div class="gallery-overlay">
+          <div class="overlay-content">
+            <i class="bi bi-zoom-in"></i>
+            <span>Voir plus</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- CTA Section Moderne -->
+<section class="cta-section">
+  <div class="cta-bg"></div>
+  <div class="container">
+    <div class="cta-content">
+      <div class="cta-badge">
+        <i class="bi bi-lightning-charge"></i>
+        <span>Réservez maintenant</span>
+      </div>
+      <h2 class="cta-title">Prêt à prendre soin de votre santé ?</h2>
+      <p class="cta-description">Rejoignez plus de 10 000 patients qui font confiance à SmartMedical pour leur bien-être quotidien.</p>
+      <div class="cta-buttons">
+        <a routerLink="/frontoffice/appointment" class="btn btn-cta-primary">
+          <i class="bi bi-calendar-check"></i>
+          <span>Prendre rendez-vous</span>
+        </a>
+        <a routerLink="/frontoffice/contact" class="btn btn-cta-secondary">
+          <i class="bi bi-telephone"></i>
+          <span>Nous contacter</span>
+        </a>
+      </div>
+      <div class="cta-trust">
+        <div class="trust-item">
+          <i class="bi bi-shield-check"></i>
+          <span>Paiement sécurisé</span>
+        </div>
+        <div class="trust-item">
+          <i class="bi bi-clock"></i>
+          <span>Réponse sous 24h</span>
+        </div>
+        <div class="trust-item">
+          <i class="bi bi-heart"></i>
+          <span>Satisfaction garantie</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>

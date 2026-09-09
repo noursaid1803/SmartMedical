@@ -1,0 +1,9 @@
+node_modules
+dist
+.angular
+*.log
+*.err
+ng_output.txt
+.git
+.gitignore
+README.md

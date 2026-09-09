@@ -1,0 +1,168 @@
+{
+  "sprint2_progression": [
+    {
+      "version": "CNN seul (S1)",
+      "F1": 0.7495,
+      "AUC": 0.9207,
+      "QWK": 0.8409,
+      "VM_F1": 0.54
+    },
+    {
+      "version": "CNN+GNN CrossEntropy",
+      "F1": 0.8425,
+      "AUC": 0.9782,
+      "QWK": 0.9101,
+      "VM_F1": 0.76
+    },
+    {
+      "version": "CNN+GNN Focal+Mixup",
+      "F1": 0.8999,
+      "AUC": 0.9817,
+      "QWK": 0.9413,
+      "VM_F1": 0.81
+    },
+    {
+      "version": "CNN+GraphSAGE+PH",
+      "F1": 0.9123,
+      "AUC": 0.9844,
+      "QWK": 0.9456,
+      "VM_F1": 0.84
+    },
+    {
+      "version": "CNN+GAT+PH",
+      "F1": 0.9098,
+      "AUC": 0.9872,
+      "QWK": 0.9469,
+      "VM_F1": 0.845
+    },
+    {
+      "version": "CNN+GAT+PH optimisé",
+      "F1": 0.9126,
+      "AUC": 0.9869,
+      "QWK": 0.9461,
+      "VM_F1": 0.8518
+    }
+  ],
+  "ablation_study": [
+    {
+      "config": "A — CNN seul",
+      "F1": 0.7495,
+      "AUC": 0.9207,
+      "QWK": 0.8409
+    },
+    {
+      "config": "B — CNN+GNN CrossEntropy",
+      "F1": 0.8425,
+      "AUC": 0.9782,
+      "QWK": 0.9101
+    },
+    {
+      "config": "C — +Focal+Mixup",
+      "F1": 0.8999,
+      "AUC": 0.9817,
+      "QWK": 0.9413
+    },
+    {
+      "config": "D — +PH (GraphSAGE)",
+      "F1": 0.9123,
+      "AUC": 0.9844,
+      "QWK": 0.9456
+    },
+    {
+      "config": "E — +GAT",
+      "F1": 0.9098,
+      "AUC": 0.9872,
+      "QWK": 0.9469
+    },
+    {
+      "config": "F — +EdgeFeat+CutMix+Sampler",
+      "F1": 0.9126,
+      "AUC": 0.9869,
+      "QWK": 0.9461
+    }
+  ],
+  "sota_comparison": [
+    {
+      "ref": "Liu et al. 2020 (CNN+GCN)",
+      "F1": 0.798,
+      "AUC": 0.851,
+      "Acc": 0.814
+    },
+    {
+      "ref": "Bi et al. 2021 (GNN)",
+      "F1": 0.823,
+      "AUC": 0.878,
+      "Acc": 0.839
+    },
+    {
+      "ref": "Zhang et al. 2022 (GraphSAGE)",
+      "F1": 0.841,
+      "AUC": 0.897,
+      "Acc": 0.856
+    },
+    {
+      "ref": "SipDetect v6 (ours)",
+      "F1": 0.9126,
+      "AUC": 0.9869,
+      "Acc": 0.9047
+    }
+  ],
+  "confusion_matrix_test": [
+    [
+      1149,
+      258,
+      33,
+      0
+    ],
+    [
+      47,
+      1267,
+      28,
+      2
+    ],
+    [
+      11,
+      106,
+      1226,
+      1
+    ],
+    [
+      0,
+      0,
+      0,
+      970
+    ]
+  ],
+  "classification_report": {
+    "Non Demented": {
+      "precision": 0.95,
+      "recall": 0.8,
+      "f1": 0.87,
+      "support": 1440
+    },
+    "Very Mild": {
+      "precision": 0.78,
+      "recall": 0.94,
+      "f1": 0.85,
+      "support": 1344
+    },
+    "Mild": {
+      "precision": 0.95,
+      "recall": 0.91,
+      "f1": 0.93,
+      "support": 1344
+    },
+    "Moderate": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1": 1.0,
+      "support": 970
+    },
+    "accuracy": 0.9047,
+    "macro_avg": {
+      "precision": 0.92,
+      "recall": 0.91,
+      "f1": 0.91
+    }
+  }
+}

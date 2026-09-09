@@ -1,0 +1,28 @@
+<div class="backoffice-layout" 
+     [class.sidebar-collapsed]="sidebarCollapsed"
+     [class.mobile-sidebar-open]="mobileSidebarOpen"
+     [class.is-mobile]="isMobile">
+  
+  <!-- Mobile Overlay -->
+  <div class="mobile-overlay" 
+       [class.show]="mobileSidebarOpen" 
+       (click)="closeMobileSidebar()"></div>
+  
+  <!-- Sidebar -->
+  <app-sidebar 
+    [collapsed]="sidebarCollapsed" 
+    [mobileOpen]="mobileSidebarOpen"
+    [class.show]="mobileSidebarOpen">
+  </app-sidebar>
+  
+  <!-- Main Content Wrapper -->
+  <div class="main-wrapper">
+    <app-header (toggleSidebar)="toggleSidebar()"></app-header>
+    
+    <main class="main-content">
+      <div class="container-fluid py-4 page-transition">
+        <router-outlet></router-outlet>
+      </div>
+    </main>
+  </div>
+</div>

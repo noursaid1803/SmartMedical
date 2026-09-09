@@ -1,0 +1,88 @@
+<div class="users-page page-transition">
+  <div class="page-header-medical mb-4">
+    <div>
+      <h2 class="page-title">Gestion des administrateurs</h2>
+      <p class="page-subtitle">{{ admins.length }} administrateur(s) — accès complet à la plateforme</p>
+    </div>
+    <button class="btn-medical btn-medical-primary" (click)="toggleForm()">
+      <i class="bi bi-shield-plus"></i>
+      {{ showForm ? 'Annuler' : 'Nouvel administrateur' }}
+    </button>
+  </div>
+
+  <div class="alert alert-success" *ngIf="successMessage">{{ successMessage }}</div>
+  <div class="alert alert-danger" *ngIf="errorMessage">{{ errorMessage }}</div>
+
+  <div class="medical-card mb-4" *ngIf="showForm">
+    <div class="card-header">
+      <h3 class="card-title">Créer un administrateur</h3>
+      <p class="card-subtitle">L'email doit être approuvé via le code de vérification envoyé</p>
+    </div>
+    <div class="card-body">
+      <form [formGroup]="adminForm" (ngSubmit)="onSubmit()" class="form-medical">
+        <div class="row g-3">
+          <div class="col-md-4">
+            <label class="form-label">Nom complet</label>
+            <input type="text" class="form-control" formControlName="name" placeholder="Nom de l'admin" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Email</label>
+            <input type="email" class="form-control" formControlName="email" placeholder="admin@exemple.com" />
+          </div>
+          <div class="col-md-4">
+            <label class="form-label">Mot de passe temporaire</label>
+            <input type="password" class="form-control" formControlName="password" />
+          </div>
+        </div>
+        <div class="mt-4">
+          <button type="submit" class="btn-medical btn-medical-primary" [disabled]="adminForm.invalid || loading">
+            <i class="bi bi-check-lg"></i> Créer et envoyer le code
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <div class="medical-card">
+    <div class="table-responsive">
+      <table class="medical-table">
+        <thead>
+          <tr>
+            <th>Nom</th>
+            <th>Email</th>
+            <th>Statut</th>
+            <th>Créé le</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr *ngIf="loading">
+            <td colspan="4" class="text-center py-4">Chargement…</td>
+          </tr>
+          <tr *ngFor="let admin of admins">
+            <td>
+              <div class="d-flex align-items-center gap-2">
+                <span class="admin-avatar"><i class="bi bi-shield-fill-check"></i></span>
+                {{ admin.name || 'Administrateur' }}
+              </div>
+            </td>
+            <td>{{ admin.email }}</td>
+            <td>
+              <span class="badge-medical" [class.badge-medical-success]="admin.verified" [class.badge-medical-warning]="!admin.verified">
+                {{ getStatusLabel(admin) }}
+              </span>
+            </td>
+            <td>{{ admin.createdAt | date:'dd/MM/yyyy HH:mm' }}</td>
+          </tr>
+          <tr *ngIf="!loading && admins.length === 0">
+            <td colspan="4" class="text-center text-muted py-4">Aucun administrateur trouvé</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <div class="info-banner mt-4">
+    <i class="bi bi-info-circle"></i>
+    <span>Admin principal : <strong>arijhedhri4&#64;gmail.com</strong> / <strong>admin123</strong> (pré-vérifié au démarrage)</span>
+  </div>
+</div>
