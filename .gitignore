@@ -80,6 +80,8 @@ models_cache/
 # Large ML weights
 *.pt
 Backend/AI-ANALYSIS-SERVICE/models/
+Backend/AI-ANALYSIS-SERVICE/training_data/
+sipdetect_ms2_package/model.pth
 
 # Local secrets / test artifacts
 email_credentials_fallback.txt
